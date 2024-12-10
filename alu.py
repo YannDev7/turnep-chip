@@ -29,7 +29,7 @@ def n_adder(a, b, c = Constant("0")):
     return (s, c)
 
 
-def Not(b):
+def _not(b):
     assert(a.bus_size == b.bus_size)
     if b[0] == 1:
         a = Constant("0")
@@ -42,5 +42,5 @@ def Not(b):
             a = a + Constant("1")
 
 def sub(a,b): #renvoie a-b et le socke dans a
-    s = Not(b)
+    s = _not(b)
     return  n_adder(a, s, c=Constant("1"))
