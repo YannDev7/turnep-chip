@@ -28,8 +28,6 @@ def n_adder(a, b, c = Constant("0")):
         s = s + s_i
     return (s, c)
 
-
-
 """
 input: buses a, b
 returns a <- a - b
@@ -38,3 +36,5 @@ def sub(a,b):
     s = Not(b)
     return  n_adder(a, s, c=Constant("1"))
 
+def __init__():
+    allow_ribbon_logic_operations(True)
