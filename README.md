@@ -14,35 +14,35 @@ Le registre correspondant au pointeur de la rom, à partir duquel on lit les int
 
 | Instruction | Encoding | Description |
 |------------ | -------- | ----|
-| ADD         | 01 00 rs1 rs2 |  rs1 <- \$rs1 + \$rs2  |
-| SUB         | 02 00 rs1 rs2 |  rs1 <- \$rs1 - \$rs2  |
-| XOR         | 03 00 rs1 rs2 |  rs1 <- \$rs1 ^ \$rs2  |
-| OR          | 04 00 rs1 rs2 |  rs1 <- \$rs1 \| \$rs2 |
-| AND         | 05 00 rs1 rs2 |  rs1 <- \$rs1 & \$rs2  |
-| ADDIMM      | E5 imm rs1    |  rs1 <- imm + \$rs1  |
-| NOT         | 06 00 rs1 00  |  rs1 <- ~\$rs2         |
-| LSHIFT      | 07 00 rs1 rs2 |  rs1 <- \$rs1 << \$rs2 |
-| RSHIFT      | 08 00 rs1 rs2 |  rs1 <- \$rs1 >> \$rs2 |
-| LOAD        | 09 00 rs1 rs2 |  rs1 <- M[\$rs2]       |
-| LOADIMM     | E9 imm rs1    |  rs1 <- imm            |
-| STORE       | 0A 00 rs1 rs2 |  M[\$rs1] <- \$rs2     |
-| STOREIMM    | EA imm rs1    |  M[\$rs1] <- imm       |
-| MOV         | 0B 00 rs1 rs2 |  rs1 <- \$rs2          |
-| NONZERO     | 0C 00 rs1 00  |  if \$rs1 <> 0 then PC += 1  |
-| JMP         | F0 00 rs1 00  |  PC += \$rs1           |
-| JMPIMM      | F1 imm rs1    |  PC += \$rs1           |
+| ADD         | 01 rs1 rs2 00 |  rs1 <- \$rs1 + \$rs2  |
+| SUB         | 02 rs1 rs2 00 |  rs1 <- \$rs1 - \$rs2  |
+| XOR         | 03 rs1 rs2 00 |  rs1 <- \$rs1 ^ \$rs2  |
+| OR          | 04 rs1 rs2 00 |  rs1 <- \$rs1 \| \$rs2 |
+| AND         | 05 rs1 rs2 00 |  rs1 <- \$rs1 & \$rs2  |
+| ADDIMM      | E5 rs1 imm    |  rs1 <- imm + \$rs1  |
+| NOT         | 06 rs1 rs2 00 |  rs1 <- ~\$rs2         |
+| LSHIFT      | 07 rs1 rs2 00 |  rs1 <- \$rs1 << \$rs2 |
+| RSHIFT      | 08 rs1 rs2 00 |  rs1 <- \$rs1 >> \$rs2 |
+| LOAD        | 09 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
+| LOADIMM     | E9 rs1 imm    |  rs1 <- imm            |
+| STORE       | 0A rs1 rs2 00 |  M[\$rs1] <- \$rs2     |
+| STOREIMM    | EA rs1 imm    |  M[\$rs1] <- imm       |
+| MOV         | 0B rs1 rs2 00 |  rs1 <- \$rs2          |
+| NONZERO     | 0C rs1 00  00 |  if \$rs1 <> 0 then PC += 1  |
+| JMP         | F0 rs1 00  00 |  PC += \$rs1           |
+| JMPIMM      | F1 00  imm    |  PC += imm             |
 
 
 Nous prévoyons d'éventuellement ajouter les instructions suivantes (bien qu'elles ne soient pas nécessaires à la réalisation d'une horloge).
 | Instruction | Encoding      | Description                  | 
 |-------------|---------------| ---------------------------- |
-| MUL         | 0D 00 rs1 rs2 |  rs1 <- \$rs1 * \$rs2 |
-| EQ          | 0E 00 rs1 rs2 |  if \$rs1 = \$rs2 then PC += 1  |
-| NEQ         | 0F 00 rs1 rs2 |  if \$rs1 <> \$rs2 then PC += 1  |
-| GTE         | 10 00 rs1 rs2 |  if \$rs1 >= \$rs2 then PC += 1  |
-| LT          | 11 00 rs1 rs2 |  if \$rs1 < \$rs2 then PC += 1  |
-| POPCOUNT    | 12 00 rs1 rs2 |  rs1 <- nombre de bits à 1 de $rs2  |
-| DIV         | 13 00 rs1 rs2 |  rs1 <- \$rs1 / \$rs2; rr <- \$rs1 % \$rs2 |
+| MUL         | 0D rs1 rs2 00 |  rs1 <- \$rs1 * \$rs2 |
+| EQ          | 0E rs1 rs2 00 |  if \$rs1 = \$rs2 then PC += 1  |
+| NEQ         | 0F rs1 rs2 00 |  if \$rs1 <> \$rs2 then PC += 1  |
+| GTE         | 10 rs1 rs2 00 |  if \$rs1 >= \$rs2 then PC += 1  |
+| LT          | 11 rs1 rs2 00 |  if \$rs1 < \$rs2 then PC += 1  |
+| POPCOUNT    | 12 rs1 rs2 00 |  rs1 <- nombre de bits à 1 de $rs2  |
+| DIV         | 13 rs1 rs2 00 |  rs1 <- \$rs1 / \$rs2; rr <- \$rs1 % \$rs2 |
 
 
 
