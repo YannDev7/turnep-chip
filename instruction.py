@@ -28,7 +28,8 @@ def build(tr, a, pos):
     # else go to if 0
     if not isinstance(tr, list):
         # base case
-        if tr == ADD:
+        if tr == "ADD":
+            # todo: call function ADD etc
             e = n_adder()
             pass
         #...
