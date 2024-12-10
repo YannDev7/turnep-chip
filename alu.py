@@ -32,17 +32,7 @@ def n_adder(a, b, c = Constant("0")):
 input: bus b
 returns ~b
 """
-def _not(b):
-    assert(a.bus_size == b.bus_size)
-    if b[0] == 1:
-        a = Constant("0")
-    else:
-        a = Constant("1")
-    for i in range(1,b.bus_size):
-        if b == 1:
-            a = a + Constant("0")
-        else:
-            a = a + Constant("1")
+
 
 """
 input: buses a, b
@@ -51,3 +41,4 @@ returns a <- a - b
 def sub(a,b):
     s = Not(b)
     return  n_adder(a, s, c=Constant("1"))
+
