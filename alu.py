@@ -28,10 +28,6 @@ def n_adder(a, b, c = Constant("0")):
         s = s + s_i
     return (s, c)
 
-"""
-input: bus b
-returns ~b
-"""
 
 
 """
