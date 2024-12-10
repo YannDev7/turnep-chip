@@ -27,3 +27,20 @@ def n_adder(a, b, c = Constant("0")):
         (s_i, c) = full_adder(a[i], b[i], c)
         s = s + s_i
     return (s, c)
+
+
+def Not(b):
+    assert(a.bus_size == b.bus_size)
+    if b[0] == 1:
+        a = Constant("0")
+    else:
+        a = Constant("1")
+    for i in range(1,b.bus_size):
+        if b == 1:
+            a = a + Constant("0")
+        else:
+            a = a + Constant("1")
+
+def sub(a,b): #renvoie a-b et le socke dans a
+    s = Not(b)
+    return  n_adder(a, s, c=Constant("1"))
