@@ -28,8 +28,11 @@ def n_adder(a, b, c = Constant("0")):
         s = s + s_i
     return (s, c)
 
-
-def Not(b):
+"""
+input: bus b
+returns ~b
+"""
+def _not(b):
     assert(a.bus_size == b.bus_size)
     if b[0] == 1:
         a = Constant("0")
@@ -41,6 +44,10 @@ def Not(b):
         else:
             a = a + Constant("1")
 
-def sub(a,b): #renvoie a-b et le socke dans a
+"""
+input: buses a, b
+returns a <- a - b
+"""
+def sub(a,b):
     s = Not(b)
     return  n_adder(a, s, c=Constant("1"))
