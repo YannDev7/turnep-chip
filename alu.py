@@ -2,6 +2,10 @@ import carotte
 from carotte.lib_carotte import *
 
 """
+Convention: a[0] is the lsb
+"""
+
+"""
 input: bits a,b and c
 computes a+b+c
 returns (sum, carry)
@@ -10,6 +14,11 @@ def full_adder(a, b, c):
     tmp = a ^ b
     return (tmp ^ c, (tmp & c) | (a & b))
 
+"""
+input: buses a,b and carry c (optionnal)
+computes a+b+c
+returns (sum, carry)
+"""
 def n_adder(a, b, c = Constant("0")):
     assert(a.bus_size == b.bus_size)
 
