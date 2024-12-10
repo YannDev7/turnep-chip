@@ -1,6 +1,20 @@
 import carotte
 from carotte.lib_carotte import *
 
-def full_adder(a: Variable, b: Variable, c: Variable) -> typing.Tuple[Variable, Variable]:
+"""
+input: bits a,b and c
+computes a+b+c
+returns (sum, carry)
+"""
+def full_adder(a, b, c):
     tmp = a ^ b
     return (tmp ^ c, (tmp & c) | (a & b))
+
+def n_adder(a, b, c = Constant("0")):
+    assert(a.bus_size == b.bus_size)
+
+    (s, c) = full_adder(a[0], b[0], c)
+    for i in range(1, a.bus_size):
+        (s_i, c) = full_adder(a[i], b[i], c)
+        s = s + s_i
+    return (s, c)
