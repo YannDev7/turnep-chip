@@ -53,7 +53,7 @@ class ALU:
         return nuage.imm
     
     def load_rom(self, a, b, nuage):
-        reader = ROM(addr_size_rom, word_size_rom, b[32 - addr_size_rom:32])
+        reader = ROM(addr_size_rom, word_size_rom, Slice(32 - addr_size_rom, 32, b))
         reader.rename("rom_data")
         return Constant("0" * (32 - word_size_rom)) + reader
         

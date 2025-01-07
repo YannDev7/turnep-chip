@@ -20,8 +20,9 @@ def main():
 
     selector = Selector()
 
-    inst_ptr = Reg(Defer(32, lambda: inst_ptr))
+    inst_ptr = Defer(32, lambda: inst_ptr)
     inst_ptr = Reg(alu.add(inst_ptr, Constant("0" * 31 + "1")))
+    inst_ptr.set_as_output("coucou")
 
     """
         Note: 
