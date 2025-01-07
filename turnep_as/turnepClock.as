@@ -1,45 +1,69 @@
 
 
+% jour = r1x
+% mois = r2x
+% annee = r3x
+% heure = r4x
+% minutes = r5x
+% secondes = r6x
+% cycleCount = r9x
 
+% arg1 = rax
+% arg2 = rbx
+% valDeRetour = rcx
 
-LOAD rac $1
-LOAD rbc $31
+% treize = r8x
+
+% compteur = rdx
+
+MOV @treize $13
+
+MOV rac $1
+MOV rbc $31
 LSHIFT rac rbc
 
 # rac contient l'offset des addresses pour la rom
-LOAD rcc $0
+MOV rcc $0
 OR rcc rac
-LOAD r1x rcc # jour
+LOAD @jour rcc # jour
 
-LOAD rcc $1
+MOV rcc $1
 OR rcc rac
-LOAD r2x rcc # mois
+LOAD @mois rcc # mois
 
-LOAD rcc $2
+MOV rcc $2
 OR rcc rac
-LOAD r3x rcc # annee
+LOAD @annee rcc # annee
 
-LOAD rcc $3
+MOV rcc $3
 OR rcc rac
-LOAD r4x rcc # heure
+LOAD @heure rcc # heure
 
-LOAD rcc $4
+MOV rcc $4
 OR rcc rac
-LOAD r5x rcc # minutes
+LOAD @minutes rcc # minutes
 
-LOAD rcc $5
+MOV rcc $5
 OR rcc rac
-LOAD r6x rcc # secondes
+LOAD @secondes rcc # secondes
 
-LOAD rcc $6
+MOV rcc $6
 OR rcc rac
-LOAD r9x rcc # nombre de tours par seconde
+LOAD @cycleCount rcc # nombre de tours par seconde
 
-LOAD rdx $25
+MOV @compteur $25
 
 
 clockCycleLoop:
-ADD rdx $1
+ADD @compteur $1
+
+
+
+
+divisiblePar25:
+MOV rac x$ffe0
+MOV rbc @arg1
+
 
 
 

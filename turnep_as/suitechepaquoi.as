@@ -1,8 +1,8 @@
 
 
-LOAD rdx $10
-LOAD rax $3
-LOAD r1x $1
+MOV rdx $10
+MOV rax $3
+MOV r1x $1
 
 loop:
 

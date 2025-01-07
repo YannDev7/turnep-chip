@@ -153,6 +153,8 @@ def store(code):
 def storeimm(code):
     r1 = reg1f(code)
     imm = immf(code)
+    if imm & 0x8000:
+        imm |= 0xffff0000
     memory[regs[r1]] = imm
 
 def mov(code):
