@@ -1,4 +1,4 @@
-test.net: main.py alu.py utils.py
+test.net: main.py alu.py utils.py selector.py registers.py
 	carotte/carotte.py -o $@ main.py
 
 testw: test.net
@@ -11,4 +11,4 @@ test: test.net
 run: test
 	./test
 
-.PHONY: run testw
+.PHONY: run testw test.net

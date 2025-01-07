@@ -21,7 +21,7 @@ def main():
 
     selector = Selector()
 
-    nuageline = selector.select(Constant("1100"))
+    nuageline = selector.select(Constant("1111"))
 
     #niquetamerejoeinit_reg = [Constant("1" * 32) for i in range(2)]
     registers = Registers(2, nuageline, alu.alu_hub(
