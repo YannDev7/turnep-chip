@@ -32,8 +32,8 @@ input: buses a, b
 returns a <- a + b
 """
 def add(a,b):
-    s, _ = n_adder(a, b)
-    return s
+    s, c= n_adder(a, b)
+    return Concat(c,s)
 
 """
 input: buses a, b
@@ -41,5 +41,5 @@ returns a <- a - b
 """
 def sub(a,b):
     s = Not(b)
-    s, _ = n_adder(a, s, c=Constant("1"))
-    return s
+    s, c = n_adder(a, s, c=Constant("1"))
+    return Concat(c, s)
