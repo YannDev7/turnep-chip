@@ -5,7 +5,7 @@ testw: test.net
 	./netlist_simulator.byte test.net
 
 test: test.net
-	./netlist_simulator.byte -n 1 test.net
+	./netlist_simulator.byte  -n 1 test.net
 	gcc simulator.c -o test
 	
 run: test
