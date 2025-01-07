@@ -1,5 +1,6 @@
 from lib_carotte import *
 from utils import *
+from const import *
 
 class ALU:
     def __init__(self):
@@ -32,7 +33,7 @@ class ALU:
     input: buses a, b
     returns a <- a + b
     """
-    def add(self, a,b):
+    def add(self, a, b, nuage = None):
         s, c = self.n_adder(a, b)
         return s
 
@@ -40,18 +41,29 @@ class ALU:
     input: buses a, b
     returns a <- a - b
     """
-    def sub(self, a, b):
+    def sub(self, a, b, nuage = None):
         s = Not(b)
         s, c = self.n_adder(a, s, Constant("1"))
         return s
     
-    def mauve_snd(self, a, b):
+    def mov(self, a, b, nuage = None):
         return b
-
-    def not_(self, a, b):
+    
+    def mov_imm(self, a, b, nuage):
+        return nuage.imm
+    
+    def load_rom(self, a, b, nuage):
+        reader = ROM(addr_size_rom, word_size_rom, b[32 - addr_size_rom:32])
+        reader.rename("rom_data")
+        return Constant("0" * (32 - word_size_rom)) + reader
+        
+    def load_ram(self, a, b, nuage):
+        return RAM(addr_size_rom, word_size_rom, b[32 - addr_size_rom:32])
+  
+    def not_(self, a, b, nuage = None):
         return Not(a)
 
-    def alu_hub(self, a, b, op):
-        funs = [self.add, self.sub, self.mauve_snd, self.not_]
-        vals = [f(a, b) for f in funs]
-        return giga_mux(op, vals)
+    def alu_hub(self, a, b, nuage):
+        funs = [self.add, self.sub, self.mov, self.mov_imm, self.not_, self.load_rom]
+        vals = [f(a, b, nuage) for f in funs]
+        return giga_mux(nuage.op, vals)

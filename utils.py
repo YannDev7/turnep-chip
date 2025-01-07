@@ -19,8 +19,10 @@ def giga_mux(selec, ls):
         po *= 2
 
     while len(ls) < po:
-        ls.append(Constant("0" * len(selec[0].value)))
+        ls.append(Constant("0" * ls[0].bus_size))
 
+    for x in ls:
+        print(x.bus_size)
     return giga_mux_aux(selec, 0, ls)
 
 def giga_mux_aux(selec, pos, ls):
