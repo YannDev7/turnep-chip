@@ -1,6 +1,6 @@
 INPUT _input_0
-OUTPUT 
-VAR _input_0, _l_1, _l_2, _l_3, _l_4, _l_5, _l_6, _l_7, _l_8, _l_9, _l_10, _l_11, _l_12, _l_13, _l_14, _l_15, _l_16, _l_17, _l_18, _l_19, _l_20, _l_21, _l_22
+OUTPUT ouiii
+VAR _input_0, _l_1, _l_2, _l_3, _l_4, _l_5, _l_6, _l_7, _l_8, _l_9, _l_10, _l_11, _l_12, _l_13, _l_14, _l_15, _l_16, _l_17, _l_18, _l_19, _l_20, _l_21, ouiii
 IN
 _l_1 = 1
 _l_2 = 1
@@ -23,4 +23,4 @@ _l_18 = AND _l_16 _l_13
 _l_19 = AND _l_14 _l_15
 _l_20 = OR _l_18 _l_19
 _l_21 = SELECT 0 _input_0
-_l_22 = MUX _l_21 _l_17 _l_6
+ouiii = MUX _l_21 _l_17 _l_6
