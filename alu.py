@@ -43,3 +43,4 @@ def sub(a,b):
     s = Not(b)
     s, c = n_adder(a, s, c=Constant("1"))
     return Concat(c, s)
+    

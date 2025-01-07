@@ -8,14 +8,13 @@ selec: the input bus we select from
 ls is the list of leaves
 """
 
-
 def giga_mux(selec, ls):
     po = 1
     while po < len(ls):
         po *= 2
 
     while len(ls) < po:
-        ls.append(ls[-1])
+        ls.append(Constant("0"))
 
     return giga_mux_aux(selec, 0, ls)
 
