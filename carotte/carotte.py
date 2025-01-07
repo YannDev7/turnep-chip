@@ -45,8 +45,8 @@ def process(module_file: str, output_filename: str | None = None) -> None:
         print(f"Could not load file '{module_file}'", file=sys.stderr)
         sys.exit(1)
     if assignhooks is not None:
+        # SUS lib_carotte.reset()
         assignhooks.patch_module(module)
-    lib_carotte.reset()
     module.main() # type: ignore
 
     netlist = lib_carotte.get_netlist()
