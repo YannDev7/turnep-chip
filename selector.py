@@ -1,13 +1,19 @@
 from lib_carotte import *
 from utils import *
 
-class Line:
+class NuageLine:
     def __init__(self, linebus):
         self.linebus = linebus
-        self.instr_id = Slice(0, 1, linebus)
-        self.raddr1 = Slice(1, 2, linebus)
-        self.raddr2 = Slice(2, 3, linebus)
-        self.op = giga_mux(self.instr_id, [Constant(str(i)) for i in range(2)])
+        self.instr_id = Slice(0, 2, linebus)
+        self.raddr1 = Slice(2, 3, linebus)
+        self.raddr2 = Slice(3, 4, linebus)
+        print([Constant(bin(i)[2:].zfill(2)).value for i in range(4)])
+        self.op = giga_mux(self.instr_id, [Constant(bin(i)[2:].zfill(2)) for i in range(4)])
+
+
+        self.wenable = Constant("0")
+        self.immdata = None
+
 
 class Selector:
     def __init__(self):
@@ -25,4 +31,4 @@ class Selector:
         (instr id) (raddr1) (raddr2)
     """
     def select(self, linebus: Variable):
-        return Line(linebus)
+        return NuageLine(linebus)

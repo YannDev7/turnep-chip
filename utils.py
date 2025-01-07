@@ -19,7 +19,7 @@ def giga_mux(selec, ls):
         po *= 2
 
     while len(ls) < po:
-        ls.append(Constant("0"))
+        ls.append(Constant("0" * len(selec[0].value)))
 
     return giga_mux_aux(selec, 0, ls)
 

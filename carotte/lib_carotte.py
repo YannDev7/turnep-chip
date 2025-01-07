@@ -143,6 +143,18 @@ class Defer:
         if attr == 'autogen_name':
             return True
         raise AttributeError
+    
+    #ajout
+    def __getitem__(self, index: typing.Union[int, slice]) -> 'Variable':
+        if isinstance(index, slice):
+            if (index.step is not None) and (index.step != 1):
+                raise TypeError(f"Slices must use a step of '1' (have {index.step})")
+            start = 0 if index.start is None else index.start
+            stop = self.bus_size if index.stop is None else index.stop
+            return Slice(start, stop, self)
+        if isinstance(index, int):
+            return Select(index, self)
+        raise TypeError(f"Invalid getitem, index: {index} is neither a slice or an integer")
 
 VariableOrDefer = typing.Union[Variable, Defer]
 

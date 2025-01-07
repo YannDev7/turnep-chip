@@ -34,7 +34,6 @@ class ALU:
     """
     def add(self, a,b):
         s, c = self.n_adder(a, b)
-        dbg(s, "Add")
         return s
 
     """
@@ -44,10 +43,15 @@ class ALU:
     def sub(self, a, b):
         s = Not(b)
         s, c = self.n_adder(a, s, Constant("1"))
-        dbg(s, "Sub")
         return s
     
+    def mauve_snd(self, a, b):
+        return b
+
+    def not_(self, a, b):
+        return Not(a)
+
     def alu_hub(self, a, b, op):
-        funs = [self.add, self.sub]
+        funs = [self.add, self.sub, self.mauve_snd, self.not_]
         vals = [f(a, b) for f in funs]
         return giga_mux(op, vals)

@@ -2,11 +2,33 @@ from lib_carotte import *
 from utils import *
 
 class Registers:
-    def __init__(self, n, init_val, reg_size = 32):
-        self.registers = [Reg(init_val[i]) for i in range(n)]
+    def __init__(self, n, nuage, wdata, reg_size = 32):
+        self.registers = [
+            Reg(
+                
+                
+                Mux(nuage.wenable, Defer(32, lambda: self.registers[i]), Defer(32, lambda: self.registers[i]))
+                
+            ) for i in range(n)]
+        
+    def get_reg_muxlist(self, n, nuage, wdata, reg_size, i):
+        lst = []
+
+        for j in range(n):
+            if j == i:
+                wdata
+            else:
+                lst.append(Defer(reg_size, lambda: self.registers[i]))
+        return lst
 
     def select_register(self, id):
         return giga_mux(id, self.registers)
 
-    def register_hub(self, raddr1, raddr2, wenable, wdata):
-        return self.select_register(raddr1), self.select_register(raddr2)
+    def register_hub(self, raddr1, raddr2):
+        rdata1, rdata2 = self.select_register(raddr1), self.select_register(raddr2)
+        return rdata1, rdata2
+
+def snd(a, b):
+    return b
+
+
