@@ -57,8 +57,10 @@ class ALU:
         reader.rename("rom_data")
         return Constant("0" * (32 - word_size_rom)) + reader
         
-    def load_ram(self, a, b, nuage):
-        return RAM(addr_size_rom, word_size_rom, b[32 - addr_size_rom:32])
+    def load_store_ram(self, a, b, nuage):
+        reader = RAM(addr_size_rom, word_size_rom, b[32 - addr_size_rom:32], nuage.wenable_ram, b[32 - addr_size_rom:32], a[32 - addr_size_rom:32])
+        reader.rename("ramus")
+        return Constant("0" * (32 - word_size_rom)) + reader
   
     def not_(self, a, b, nuage = None):
         return Not(a)
