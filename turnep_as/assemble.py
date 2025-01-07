@@ -26,8 +26,17 @@ reg_names = [
     "r7x",
     "r8x",
     "r9x",
-]
 
+    "rac", # modifies potentiellement par l'appel
+    "rbc",
+    "rcc",
+    "rdc",
+    "rec",
+
+    "rrt",
+    "rsp",
+    "rbp"
+]
 reg_name_to_id = {name: i for (i, name) in enumerate(reg_names, 1)}
 
 
@@ -147,7 +156,12 @@ def parse_file(file, code_buf, data, instr_set):
                                 break
                             if d_code or add_link is not None:
                                 if add_link is not None:
-                                    links.append((len(code_buf), add_link))
+
+                                    if "->" in add_link:
+                                        [deb, fin] = add_link.split("->")
+                                        links.append((len(code_buf), [deb, fin]))
+                                    else:
+                                        links.append((len(code_buf), add_link))
                                 d_code |= code << 24
                     if d_code:
                         code_buf.append(d_code)
@@ -164,7 +178,17 @@ assert subu16(34, 33) == 1
 
 def handle_links(code_buf):
     for (i, label) in links:
-        code_buf[i] |= u16sub(u16sub(labels[label], i), 1)
+
+        if isinstance(label, list):
+            [jlab, label] = label
+            #print(jlab, label, labels)
+
+            j = labels[jlab]
+        else:
+            j = i
+        v = u16sub(u16sub(labels[label], j), 1)
+        #print(v)
+        code_buf[i] |= u16sub(u16sub(labels[label], j), 1)
 
 
         

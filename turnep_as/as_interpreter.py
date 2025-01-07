@@ -2,7 +2,7 @@
 
 import re
 from usize import *
-
+from assemble import reg_name_to_id
 
 class Ram:
     def __init__(self):
@@ -115,6 +115,8 @@ def band(code):
 def addimm(code):
     r1 = reg1f(code)
     imm = immf(code)
+    if imm & 0x8000:
+        imm |= 0xffff0000
     regs[r1] = u32add(regs[r1], imm)
 
 def bnot(code):
@@ -139,6 +141,8 @@ def load(code):
 def loadimm(code):
     r1 = reg1f(code)
     imm = immf(code)
+    if imm & 0x8000:
+        imm |= 0xffff0000
     regs[r1] = imm
 
 def store(code):
@@ -193,20 +197,53 @@ instr_fun = {
     0xF0: jmp,
     0xF1: jmpimm
 }
-import time
+import time, sys
 
 def main():
     global pc
+
+    lines = []
+
+    stepbystep = "-step" in sys.argv
     d = load_rom("output.hex")
+
+    if "-file" in sys.argv:
+        i = sys.argv.index("-file")
+        f = sys.argv[i+1]
+        with open(f) as file:
+            for line in file:
+                line = line.replace("\n", "")
+                line = line.split("#")[0]
+                if line and ":" not in line:
+                    lines.append(line)
 
     code_rom = d["code"]
     while pc < len(code_rom):
+        if lines:
+            print(lines[pc])
+        print(pc, ":", end=" ")
         code = code_rom[pc]
         instr = instrf(code)
         instr_fun[instr](code)
         pc = u32add(pc, 1)
-        print(*regs[1:5])
+
+        for (name, id) in reg_name_to_id.items():
+            print(f"{name}={regs[id]}", end=" ")
+
+        if stepbystep:
+            i = input()
+            print(memory.d)
+
+            while i:
+                try:
+                    print(eval(i))
+                except Exception:
+                    print("error")
+                i = input()
+
     print(*regs[1:33])
+
+    print(memory.d)
 
 if __name__ == "__main__":
     main()
