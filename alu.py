@@ -1,5 +1,4 @@
-import carotte
-from carotte.lib_carotte import *
+from lib_carotte import *
 
 """
 Convention: a[0] is the lsb
@@ -30,11 +29,17 @@ def n_adder(a, b, c = Constant("0")):
 
 """
 input: buses a, b
+returns a <- a + b
+"""
+def add(a,b):
+    s, _ = n_adder(a, b)
+    return s
+
+"""
+input: buses a, b
 returns a <- a - b
 """
 def sub(a,b):
     s = Not(b)
-    return  n_adder(a, s, c=Constant("1"))
-
-def __init__():
-    allow_ribbon_logic_operations(True)
+    s, _ = n_adder(a, s, c=Constant("1"))
+    return s

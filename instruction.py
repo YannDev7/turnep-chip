@@ -20,27 +20,3 @@ tree = [
 
 def parse(inst):
     return inst[0:22], inst[23, 27]
-
-"""
-TODO: abstract this in mux file
-for registers
-"""
-def build(tr, a, pos):
-    # build next if 1 and if 0
-    # mux (if i-th bit is 1)
-    #   go to if 1
-    # else go to if 0
-    if not isinstance(tr, list):
-        # base case
-        if tr == "ADD":
-            # todo: call function ADD etc
-            e = ADD()
-            pass
-        #...
-
-        return e
-    
-    if0 = build(tr[0], a, pos + 1)
-    if1 = build(tr[1], a, pos + 1)
-
-    return Mux(a[pos], if1, if0)
