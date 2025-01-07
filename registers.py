@@ -7,7 +7,8 @@ class Registers:
             Reg(
                 
                 
-                Mux(nuage.wenable, Defer(32, lambda: self.registers[i]), Defer(32, lambda: self.registers[i]))
+                Mux(nuage.wenable, giga_mux(nuage.raddr1,     
+                self.get_reg_muxlist(n, nuage, wdata, reg_size, i)), Defer(32, lambda: self.registers[i]))
                 
             ) for i in range(n)]
         
@@ -16,7 +17,7 @@ class Registers:
 
         for j in range(n):
             if j == i:
-                wdata
+                lst.append(wdata)
             else:
                 lst.append(Defer(reg_size, lambda: self.registers[i]))
         return lst

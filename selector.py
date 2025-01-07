@@ -11,7 +11,7 @@ class NuageLine:
         self.op = giga_mux(self.instr_id, [Constant(bin(i)[2:].zfill(2)) for i in range(4)])
 
 
-        self.wenable = Constant("0")
+        self.wenable = Constant("1")
         self.immdata = None
 
 
