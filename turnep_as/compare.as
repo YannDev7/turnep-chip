@@ -1,29 +1,29 @@
 
 
 
-LOAD rax $19
-LOAD rbx $20
+MOV rax $19
+MOV rbx $20
 
 
 truc:
 
-LOAD rrt 'lesserRet->here1
+MOV rrt 'lesserRet->here1
 JMP 'lesser
 here1:
-LOAD rax $800
+MOV rax $800
 
-LOAD rrt 'lesserRet->here2
+MOV rrt 'lesserRet->here2
 JMP 'lesser
 here2:
 NONZERO rcx
-LOAD rbx $4242
+MOV rbx $4242
 
 JMP 'end
 
 
 lesser:
-LOAD rac $1
-LOAD rbc $31
+MOV rac $1
+MOV rbc $31
 LSHIFT rac rbc
 
 MOV rcx rax

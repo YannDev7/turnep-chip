@@ -1,10 +1,10 @@
 
 
-LOAD  rdx $15
-LOAD  rbx $0
-LOAD  rcx $1
+MOV  rdx $15
+MOV  rbx $0
+MOV  rcx $1
 
-LOAD  r2x $1
+MOV  r2x $1
 
 fibo:
 MOV   r1x rcx

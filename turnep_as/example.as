@@ -1,6 +1,6 @@
 
 
-LOAD r1x $31
+MOV r1x $31
 
 .data
 20

@@ -1,14 +1,14 @@
 
 
-LOAD rdx $1  # tout ça juste pour lire le premier element de la rom et le mettre dans rdx
-LOAD r1x $31
+MOV rdx $1  # tout ça juste pour lire le premier element de la rom et le mettre dans rdx
+MOV r1x $31
 LSHIFT rdx r1x
 LOAD rdx rdx
 
-LOAD  rbx $0
-LOAD  rcx $1
+MOV  rbx $0
+MOV  rcx $1
 
-LOAD  r2x $1
+MOV  r2x $1
 
 fibo:
 MOV   r1x rcx

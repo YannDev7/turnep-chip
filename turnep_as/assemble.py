@@ -40,7 +40,8 @@ reg_names = [
 reg_name_to_id = {name: i for (i, name) in enumerate(reg_names, 1)}
 
 
-
+aliases = dict()
+aliases_rev = dict()
 
 instruction_set = [
     ["ADD", REG, REG, 0x01],
@@ -53,7 +54,7 @@ instruction_set = [
     ["LSHIFT", REG, REG, 0X07],
     ["RSHIFT", REG, REG, 0X08],
     ["LOAD", REG, REG, 0X09],
-    ["LOAD", REG, IMM, 0XE9],
+    ["MOV", REG, IMM, 0XE9],
     ["STORE", REG, REG, 0X0A],
     ["STORE", REG, IMM, 0XEA],
     ["MOV", REG, REG, 0X0B],
@@ -125,6 +126,12 @@ def parse_file(file, code_buf, data, instr_set):
             #print(name, file=sys.stderr)
             
             labels[name] = len(code_buf)
+        elif line.startswith("%"):
+            [alias, reg_name] = line.replace("%", "").replace(" ", "").split("=")
+
+            aliases[alias] = reg_name
+            aliases_rev[reg_name] = alias
+
         else:
             words = line.split()
             if words:
@@ -136,6 +143,10 @@ def parse_file(file, code_buf, data, instr_set):
                     add_link = None
                     if len(words) == len(signature) + 1:
                         for i, id in enumerate(signature):
+
+                            if id == REG and words[i+1].startswith("@"):
+                                words[i+1] = aliases[words[i+1][1:]]
+
                             if id == REG and words[i + 1] in reg_name_to_id:
                                 d_code |= reg_name_to_id[words[i + 1]] << reg_off
                                 reg_off -= 8
@@ -148,6 +159,7 @@ def parse_file(file, code_buf, data, instr_set):
                                 else:
                                     n = int(words[i+1][1:])
                                 d_code |= n
+
                             elif id == IMM and words[i+1].startswith("'"):
                                 add_link = words[i+1][1:]
                             else: 

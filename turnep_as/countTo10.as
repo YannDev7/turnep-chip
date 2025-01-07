@@ -1,7 +1,7 @@
 
 
-LOAD r1x $10
-LOAD rax $1
+MOV r1x $10
+MOV rax $1
 
 loop:
 ADD  rax $1

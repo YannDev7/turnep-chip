@@ -11,13 +11,13 @@
 
 
 
-LOAD rdx $1  # tout ça juste pour lire le premier element de la rom et le mettre dans rdx
-LOAD r1x $31
+MOV rdx $1  # tout ça juste pour lire le premier element de la rom et le mettre dans rdx
+MOV r1x $31
 LSHIFT rdx r1x
 LOAD r1x rdx
 
 MOV rbx rdx  # addresse de ROM
-LOAD rsp $0  # addresse de RAM
+MOV rsp $0  # addresse de RAM
 
 romtoramloop:
 ADD rsp $1
@@ -83,9 +83,9 @@ NONZERO rac
 JMP 'quicksortEnd
 
 MOV rax rdx
-LOAD rbx r3x
+LOAd rbx r3x
 
-LOAD rrt 'lesserRet->quicksortHere
+MOV rrt 'lesserRet->quicksortHere
 JMP 'lesser
 quicksortHere:
 
@@ -130,8 +130,8 @@ JMP 'quicksort
 
 lesser: # compare rax et rbx. Met le resultat dans rcx, puis jump a l'addresse dans rrt
 # nonzero rcx -> if a >= b: instr
-LOAD rac $1
-LOAD rbc $31
+MOV rac $1
+MOV rbc $31
 LSHIFT rac rbc
 
 MOV rcx rax
