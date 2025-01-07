@@ -19,7 +19,7 @@ Le registre correspondant au pointeur de la rom, à partir duquel on lit les int
 | XOR         | 03 rs1 rs2 00 |  rs1 <- \$rs1 ^ \$rs2  |
 | OR          | 04 rs1 rs2 00 |  rs1 <- \$rs1 \| \$rs2 |
 | AND         | 05 rs1 rs2 00 |  rs1 <- \$rs1 & \$rs2  |
-| ADDIMM      | E5 rs1 imm    |  rs1 <- imm + \$rs1  |
+| ADDIMM      | E5 rs1 imm    |  rs1 <- imm + \$rs1    |
 | NOT         | 06 rs1 rs2 00 |  rs1 <- ~\$rs2         |
 | LSHIFT      | 07 rs1 rs2 00 |  rs1 <- \$rs1 << \$rs2 |
 | RSHIFT      | 08 rs1 rs2 00 |  rs1 <- \$rs1 >> \$rs2 |
