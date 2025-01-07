@@ -6,6 +6,12 @@ Builds a MUX of size n
 
 selec: the input bus we select from
 ls is the list of leaves
+
+Example:
+giga_mux(Input(1), [add(Constant("1"),Constant("1")), sub(Constant("1"),Constant("1"))]).set_as_output("ouiii")
+
+if input is 0, it will go to the add
+else go to the sub
 """
 
 def giga_mux(selec, ls):

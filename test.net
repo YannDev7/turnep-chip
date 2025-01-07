@@ -1,26 +1,25 @@
-INPUT _input_0
-OUTPUT ouiii
-VAR _input_0, _l_1, _l_2, _l_3, _l_4, _l_5, _l_6, _l_7, _l_8, _l_9, _l_10, _l_11, _l_12, _l_13, _l_14, _l_15, _l_16, _l_17, _l_18, _l_19, _l_20, _l_21, ouiii
+INPUT 
+OUTPUT raah
+VAR _l_0, _l_1:2, _l_2:2, _l_3:2, _l_4, _l_5, _l_6, _l_7, _l_8, _l_9, _l_10, _l_11, _l_12, _l_13, _l_14, _l_15, _l_16, _l_17, _l_18, _l_19:2, raah:3
 IN
-_l_1 = 1
-_l_2 = 1
-_l_3 = SELECT 0 _l_1
-_l_4 = SELECT 0 _l_2
-_l_5 = XOR _l_3 _l_4
-_l_6 = XOR _l_5 _l_0
-_l_7 = AND _l_5 _l_0
-_l_8 = AND _l_3 _l_4
-_l_9 = OR _l_7 _l_8
-_l_10 = 1
-_l_11 = 1
-_l_12 = NOT _l_11
-_l_13 = 1
-_l_14 = SELECT 0 _l_10
-_l_15 = SELECT 0 _l_12
-_l_16 = XOR _l_14 _l_15
-_l_17 = XOR _l_16 _l_13
-_l_18 = AND _l_16 _l_13
-_l_19 = AND _l_14 _l_15
-_l_20 = OR _l_18 _l_19
-_l_21 = SELECT 0 _input_0
-ouiii = MUX _l_21 _l_17 _l_6
+_l_0 = 0
+_l_1 = 00
+_l_2 = 00
+_l_3 = NOT _l_2
+_l_4 = 1
+_l_5 = SELECT 1 _l_1
+_l_6 = SELECT 1 _l_3
+_l_7 = XOR _l_5 _l_6
+_l_8 = XOR _l_7 _l_4
+_l_9 = AND _l_7 _l_4
+_l_10 = AND _l_5 _l_6
+_l_11 = OR _l_9 _l_10
+_l_12 = SELECT 0 _l_1
+_l_13 = SELECT 0 _l_3
+_l_14 = XOR _l_12 _l_13
+_l_15 = XOR _l_14 _l_11
+_l_16 = AND _l_14 _l_11
+_l_17 = AND _l_12 _l_13
+_l_18 = OR _l_16 _l_17
+_l_19 = CONCAT _l_15 _l_8
+raah = CONCAT _l_18 _l_19

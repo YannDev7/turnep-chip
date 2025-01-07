@@ -21,10 +21,10 @@ returns (sum, carry)
 def n_adder(a, b, c = Constant("0")):
     assert(a.bus_size == b.bus_size)
 
-    (s, c) = full_adder(a[0], b[0], c)
-    for i in range(1, a.bus_size):
+    (s, c) = full_adder(a[a.bus_size - 1], b[a.bus_size - 1], c)
+    for i in range(a.bus_size - 2, -1, -1):
         (s_i, c) = full_adder(a[i], b[i], c)
-        s = s + s_i
+        s = s_i + s
     return (s, c)
 
 """
@@ -33,7 +33,7 @@ returns a <- a + b
 """
 def add(a,b):
     s, c = n_adder(a, b)
-    return Concat(c,s)
+    return c + s
 
 """
 input: buses a, b
@@ -42,5 +42,5 @@ returns a <- a - b
 def sub(a,b):
     s = Not(b)
     s, c = n_adder(a, s, Constant("1"))
-    return Concat(c, s)
+    return c + s
     
