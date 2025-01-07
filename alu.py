@@ -1,10 +1,6 @@
 from lib_carotte import *
 
 """
-Convention: a[0] is the lsb
-"""
-
-"""
 input: bits a,b and c
 computes a+b+c
 returns (sum, carry)
@@ -42,5 +38,6 @@ returns a <- a - b
 def sub(a,b):
     s = Not(b)
     s, c = n_adder(a, s, Constant("1"))
-    return c + s
+    res = c + s
+    return Constant("0") + Slice(1, res.bus_size, res)
     
