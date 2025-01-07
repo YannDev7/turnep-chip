@@ -1,5 +1,4 @@
-#from carotte.lib_carotte import *
-from alu import *
+from lib_carotte import *
 
 """
 Builds a MUX of size n
@@ -32,3 +31,7 @@ def giga_mux_aux(selec, pos, ls):
     if1 = giga_mux_aux(selec, pos + 1, ls[(len(ls) // 2):])
 
     return Mux(selec[pos], if1, if0)
+
+def dbg(gate, msg):
+    tmp = Reg(gate)
+    tmp.set_as_output(eval("msg"))
