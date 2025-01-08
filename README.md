@@ -23,7 +23,8 @@ Le registre correspondant au pointeur de la rom, à partir duquel on lit les int
 | NOT         | 06 rs1 rs2 00 |  rs1 <- ~\$rs2         |
 | LSHIFT      | 07 rs1 rs2 00 |  rs1 <- \$rs1 << \$rs2 |
 | RSHIFT      | 08 rs1 rs2 00 |  rs1 <- \$rs1 >> \$rs2 |
-| LOAD        | 09 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
+| LOADROM        | 09 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
+| LOADRAM      | 14 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
 | MOVIMM     | E9 rs1 imm    |  rs1 <- imm            |
 | STORE       | 0A rs1 rs2 00 |  M[\$rs2] <- \$rs1     |
 | MOV         | 0B rs1 rs2 00 |  rs1 <- \$rs2          |
