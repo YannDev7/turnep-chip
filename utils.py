@@ -39,15 +39,19 @@ def giga_op(op): #Prend une opération associative, donne la fonction qui appliq
         if len(lst) == 1:
             return lst[0]
         return op(giga_int(lst[:len(lst) // 2]), giga_int(lst[len(lst) // 2:]))
-
+    return giga_int
 giga_or = giga_op(Or)
 giga_and = giga_op(And)
 giga_xor = giga_op(Xor)
 
 def klshift(a, k):
+    if k == 0:
+        return a
     return a[k:]+Constant("0"*k)
 
 def krshift(a, k):
+    if k == 0:
+        return a
     return Constant("0"*k)+a[:32-k]
 
 def concatlst(lst):

@@ -88,7 +88,7 @@ class ALU:
     def or_(self, a,b, nuage = None):
         s = Or(a,b)
         return s
-    def and_(a,b,nuage): 
+    def and_(self, a,b,nuage): 
         s = And(a,b)
         return s 
     def mov(self, a, b, nuage = None):
@@ -103,7 +103,7 @@ class ALU:
     def load_rom(self, a, b, nuage):
         reader = ROM(addr_size_rom, word_size_rom, Slice(32 - addr_size_rom, 32, b))
         reader.rename("rom_data")
-        return Constant("0" * (32 - word_size_rom)) + reader
+        return reader
         
     def load_store_ram(self, a, b, nuage):
         reader = RAM(addr_size_rom, word_size_rom, b[32 - addr_size_rom:32], nuage.wenable_ram, b[32 - addr_size_rom:32], a[32 - addr_size_rom:32])
@@ -113,7 +113,8 @@ class ALU:
     def not_(self, a, b, nuage = None):
         return Not(a)
 
-    def lshift(self, a, b, nuage): #pas trouvé de meilleure façon de faire qu'un gros multiplexeur. Ne marche que sur du 32bits
+    def lshift(self, a, b, nuage):
+         #pas trouvé de meilleure façon de faire qu'un gros multiplexeur. Ne marche que sur du 32bits
         return Mux(giga_or(listifier(b[:27])), giga_mux(b[27:], [klshift(a, k) for k in range(32)]), Constant("0"*32))
         #derniers 5 bits suffisent à compter jusqu'à 32. Le giga_or détermine si b plus grand que 32.
     
@@ -132,6 +133,7 @@ class ALU:
 
     def alu_hub(self, a, b, nuage):
         funs = [self.mov for i in range(256)]
+        funs[0x01] = self.add
         funs[2] = self.sub
         funs[3] = self.xor 
         funs[4] = self.or_
@@ -141,8 +143,8 @@ class ALU:
         funs[8] = self.rshift 
         funs[20] = self.load_rom
         funs[233] = self.mov_imm
-        funs[10] = self.load_store_ram
-        funs[9] = self.load_store_ram
+        #funs[10] = self.load_store_ram
+        #funs[9] = self.load_store_ram
         funs[11] = self.mov
         
         vals = [f(a, b, nuage) for f in funs]
