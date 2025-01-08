@@ -35,14 +35,18 @@ def main():
     nuage = NuageLine(reader)
     #nuageline = selector.select(Constant("1111"))
     #niquetamerejoeinit_reg = [Constant("1" * 32) for i in range(2)]
-
+    registers = None
     nomme_le_ta_mere = alu.alu_hub(
         Defer(32, lambda: registers.select_register(nuage.raddr1)),
         Defer(32, lambda: registers.select_register(nuage.raddr2)),
         nuage
     )
 
-    registers = Registers(4, nuage, nomme_le_ta_mere)
+    registers = Registers(32, nuage, nomme_le_ta_mere)
+
+    nuage.raddr1.set_as_output("raddr1")
+    nuage.raddr2.set_as_output("raddr2")
+
 
     print(nuage)
 
