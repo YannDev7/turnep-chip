@@ -88,7 +88,7 @@ class ALU:
     def or_(self, a,b, nuage = None):
         s = Or(a,b)
         return s
-    def and_(self, a,b,nuage): 
+    def and_(self, a,b,nuage):
         s = And(a,b)
         return s 
     def mov(self, a, b, nuage = None):

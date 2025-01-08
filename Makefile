@@ -1,6 +1,10 @@
 test.net: main.py alu.py utils.py selector.py registers.py
 	carotte/carotte.py -o $@ main.py
 
+testass:
+	python3 turnep_as/assemble.py turnep_as/sum.as
+	./netlist_simulator.byte -n 4 test.net
+
 testw: test.net
 	./netlist_simulator.byte -n 6 test.net
 
