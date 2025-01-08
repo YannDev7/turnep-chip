@@ -128,7 +128,7 @@ class ALU:
         return self.several_adder([klshift(And(a, b[k]), k) for k in range(32)])
 
     def alu_hub(self, a, b, nuage):
-        funs = [self.mov]
+        funs = [self.mov for i in range(256)]
         funs[2] = self.sub
         funs[3] = self.xor 
         funs[4] = self.or_
@@ -137,7 +137,7 @@ class ALU:
         funs[7] = self.lshift
         funs[8] = self.rshift 
         funs[20] = self.load_rom
-        self[233] = self.mov_imm
+        funs[233] = self.mov_imm
         funs[10] = self.load_store_ram
         funs[9] = self.load_store_ram
         funs[11] = self.mov
