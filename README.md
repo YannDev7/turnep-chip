@@ -25,8 +25,7 @@ Le registre correspondant au pointeur de la rom, à partir duquel on lit les int
 | RSHIFT      | 08 rs1 rs2 00 |  rs1 <- \$rs1 >> \$rs2 |
 | LOAD        | 09 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
 | MOVIMM     | E9 rs1 imm    |  rs1 <- imm            |
-| STORE       | 0A rs1 rs2 00 |  M[\$rs1] <- \$rs2     |
-| STOREIMM    | EA rs1 imm    |  M[\$rs1] <- imm       |
+| STORE       | 0A rs1 rs2 00 |  M[\$rs2] <- \$rs1     |
 | MOV         | 0B rs1 rs2 00 |  rs1 <- \$rs2          |
 | NONZERO     | 0C rs1 00  00 |  if \$rs1 <> 0 then PC += 1  |
 | JMP         | F0 rs1 00  00 |  PC += \$rs1           |

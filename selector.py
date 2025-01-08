@@ -13,6 +13,8 @@ class NuageLine:
         self.op = giga_mux(self.instr_id, [Constant(bin(i)[2:].zfill(3)) for i in range(8)])
 
         self.wenable = Constant("1")
+        self.wenable_ram = Constant("0")
+        self.waddr = None
 
 
 class Selector:
