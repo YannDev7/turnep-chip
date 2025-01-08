@@ -42,7 +42,7 @@ def main():
         nuage
     )
 
-    registers = Registers(2, nuage, nomme_le_ta_mere)
+    registers = Registers(25, nuage, nomme_le_ta_mere)
 
     print(nuage)
 

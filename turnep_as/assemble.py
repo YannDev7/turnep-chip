@@ -238,8 +238,8 @@ def phex(n):
 
 
 def main():
-    with open("code.db", "w") as code_file:
-        with open("data.db", "w") as data_file:
+    with open("rom_code.db", "w") as code_file:
+        with open("rom_data.db", "w") as data_file:
             buf = []
             data = dict()
             instr_set = get_name_to_data_dict()
@@ -253,7 +253,7 @@ def main():
                 print(f"[{name}]")
                 print(*[phex(a) for a in dt], sep="\n")
                 print(*[bin(a)[2:].zfill(32) for a in dt], sep="\n", end="", file=data_file)
-
+            print("0"*32, file=data_file, end="")
 
 
 

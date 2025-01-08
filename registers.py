@@ -5,11 +5,14 @@ class Registers:
     def __init__(self, n, nuage, wdata, reg_size = 32):
         self.registers = [
             Reg(
-                Mux(nuage.wenable, giga_mux(nuage.raddr1,     
-                self.get_reg_muxlist(n, nuage, wdata, reg_size, i)), Defer(32, lambda: self.registers[i]))
+                Mux(nuage.wenable, self.get_reg_mux(nuage, wdata, reg_size, i), Defer(32, lambda: self.registers[i]))
             ) for i in range(n)]
-        
+    
+    def get_reg_mux(self, nuage, wdata, reg_size, i):
+        return Mux(giga_or(listifier(Xor(Constant(bin(i)[2:].zfill(8)), nuage.raddr1))), Defer(32, lambda: self.registers[i]), wdata)
+
     def get_reg_muxlist(self, n, nuage, wdata, reg_size, i):
+        assert False
         lst = []
 
         for j in range(n):
