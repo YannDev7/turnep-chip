@@ -35,10 +35,10 @@ def giga_mux_aux(selec, pos, ls):
     return Mux(selec[pos], if1, if0)
 
 def giga_op(op): #Prend une opération associative, donne la fonction qui applique cette opération sur tout un bus
-    def giga_int(bus):
-        if bus.bus_size == 1:
-            return bus[0]
-        return op(giga_int(bus[:len(bus // 2)]), giga_int(bus[len(bus // 2):]))
+    def giga_int(lst):
+        if len(lst) == 1:
+            return lst[0]
+        return op(giga_int(lst[:len(lst) // 2]), giga_int(lst[len(lst) // 2:]))
 
 giga_or = giga_op(Or)
 giga_and = giga_op(And)
@@ -55,6 +55,9 @@ def concatlst(lst):
     for i in lst[i:]:
         b += i
     return b
+
+def listifier(bus):
+    return [bus[i] for i in range(bus.bus_size)]
 
 def dbg(gate, msg):
     tmp = Reg(gate)
