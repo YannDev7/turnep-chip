@@ -1,4 +1,5 @@
 venv/
+.vscode/
 
 
 turned_as/__pycache__/
