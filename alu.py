@@ -96,6 +96,9 @@ class ALU:
     
     def mov_imm(self, a, b, nuage):
         return nuage.imm
+    def add_imm(self, a, b, nuage):
+        return self.add(a,nuage.imm)
+
     
     def load_rom(self, a, b, nuage):
         reader = ROM(addr_size_rom, word_size_rom, Slice(32 - addr_size_rom, 32, b))
