@@ -34,6 +34,28 @@ def giga_mux_aux(selec, pos, ls):
 
     return Mux(selec[pos], if1, if0)
 
+def giga_op(op): #Prend une opération associative, donne la fonction qui applique cette opération sur tout un bus
+    def giga_int(bus):
+        if bus.bus_size == 1:
+            return bus[0]
+        return op(giga_int(bus[:len(bus // 2)]), giga_int(bus[len(bus // 2):]))
+
+giga_or = giga_op(Or)
+giga_and = giga_op(And)
+giga_xor = giga_op(Xor)
+
+def klshift(a, k):
+    return a[k:]+Constant("0"*k)
+
+def krshift(a, k):
+    return Constant("0"*k)+a[:32-k]
+
+def concatlst(lst):
+    b = lst[0]
+    for i in lst[i:]:
+        b += i
+    return b
+
 def dbg(gate, msg):
     tmp = Reg(gate)
     tmp.set_as_output(eval("msg"))
