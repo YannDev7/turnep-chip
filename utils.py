@@ -21,9 +21,12 @@ def giga_mux(selec, ls):
     while len(ls) < po:
         ls.append(Constant("0" * ls[0].bus_size))
 
-    for x in ls:
-        print(x.bus_size)
-    return giga_mux_aux(selec, 0, ls)
+    size = len(bin(len(ls)-1)) - 2
+
+    # for x in ls:
+    #     print(x.bus_size)
+    print(selec.bus_size-size, po, size)
+    return giga_mux_aux(selec[selec.bus_size-size:], 0, ls)
 
 def giga_mux_aux(selec, pos, ls):
     if len(ls) == 1:
