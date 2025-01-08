@@ -4,14 +4,11 @@ from utils import *
 class NuageLine:
     def __init__(self, linebus):
         self.linebus = linebus
-        self.instr_id = Slice(0, 3, linebus)
-        self.raddr1 = Slice(3, 4, linebus)
-        self.raddr2 = Slice(4, 5, linebus)
-        self.imm = Constant("0" * 30) + Slice(4, 6, linebus)
-        
-        print([Constant(bin(i)[2:].zfill(3)).value for i in range(8)])
-        self.op = giga_mux(self.instr_id, [Constant(bin(i)[2:].zfill(3)) for i in range(8)])
-
+        self.instr_id = Slice(0, 8, linebus)
+        self.raddr1 = Slice(8, 16, linebus)
+        self.raddr2 = Slice(16, 24, linebus)
+        self.imm = Slice(16,32, linebus)
+        self.op = giga_mux(self.instr_id, [Constant(bin(i)[2:].zfill(8)) for i in range(256)])
         self.wenable = Constant("1")
         self.wenable_ram = Constant("0")
         self.waddr = None
