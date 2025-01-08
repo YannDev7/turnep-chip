@@ -1,2 +1,2 @@
 addr_size_rom = 16
-word_size_rom = 6
+word_size_rom = 32
