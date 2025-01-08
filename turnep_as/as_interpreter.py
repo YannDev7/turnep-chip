@@ -219,6 +219,8 @@ def main():
                 if line and ":" not in line and "%" not in line:
                     lines.append(line)
 
+    cycle_count = 0
+
     code_rom = d["code"]
     while pc < len(code_rom):
 
@@ -245,9 +247,13 @@ def main():
                     print("error")
                 i = input()
 
+        cycle_count += 1
+
     print(*regs[1:33])
 
     print(memory.d)
+
+    print("\n\nnombre de cycles:", cycle_count)
 
 if __name__ == "__main__":
     main()

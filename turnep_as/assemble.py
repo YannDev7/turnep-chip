@@ -238,17 +238,22 @@ def phex(n):
 
 
 def main():
-    buf = []
-    data = dict()
-    instr_set = get_name_to_data_dict()
-    with open(sys.argv[1]) as file:
-        parse_file(file, buf, data, instr_set)
-    handle_links(buf)
-    print("[code]")
-    print(*[phex(a) for a in buf], sep="\n")
-    for (name, dt) in data.items():
-        print(f"[{name}]")
-        print(*[phex(a) for a in dt], sep="\n")
+    with open("code.db", "w") as code_file:
+        with open("data.db", "w") as data_file:
+            buf = []
+            data = dict()
+            instr_set = get_name_to_data_dict()
+            with open(sys.argv[1]) as file:
+                parse_file(file, buf, data, instr_set)
+            handle_links(buf)
+            print("[code]")
+            print(*[phex(a) for a in buf], sep="\n")
+            print(*[bin(a)[2:].zfill(32) for a in buf], sep="\n", end="", file=code_file)
+            for (name, dt) in data.items():
+                print(f"[{name}]")
+                print(*[phex(a) for a in dt], sep="\n")
+                print(*[bin(a)[2:].zfill(32) for a in dt], sep="\n", end="", file=data_file)
+
 
 
 
