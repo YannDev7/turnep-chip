@@ -144,6 +144,6 @@ class ALU:
         funs[10] = self.load_store_ram
         funs[9] = self.load_store_ram
         funs[11] = self.mov
-        
+        funs[0xE5] = self.add_imm
         vals = [f(a, b, nuage) for f in funs]
         return giga_mux(nuage.op, vals)
