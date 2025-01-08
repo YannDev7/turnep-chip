@@ -82,7 +82,15 @@ class ALU:
         s = Not(b)
         s, c = self.n_adder(a, s, Constant("1"))
         return s
-    
+    def xor(self,a ,b,nuage = None):
+        s = Xor(a,b)
+        return s
+    def or_(self, a,b, nuage = None):
+        s = Or(a,b)
+        return s
+    def and_(a,b,nuage): 
+        s = And(a,b)
+        return s 
     def mov(self, a, b, nuage = None):
         return b
     
@@ -120,6 +128,18 @@ class ALU:
         return self.several_adder([klshift(And(a, b[k]), k) for k in range(32)])
 
     def alu_hub(self, a, b, nuage):
-        funs = [self.add, self.sub, self.mov, self.mov_imm, self.not_, self.load_rom]
+        funs = [self.add]
+        funs[2] = self.sub
+        funs[3] = self.xor 
+        funs[4] = self.or_
+        funs[5] = self.and_
+        funs[6] = self.not_
+        funs[7] = self.lshift
+        funs[8] = self.rshift 
+        funs[20] = self.load_rom
+        self[233] = self.mov_imm
+        funs[10] = self.load_store_ram
+        funs[9] = self.load_store_ram
+        
         vals = [f(a, b, nuage) for f in funs]
         return giga_mux(nuage.op, vals)
