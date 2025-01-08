@@ -5,7 +5,7 @@ testw: test.net
 	./netlist_simulator.byte -n 6 test.net
 
 testwexe: test.net
-	./netlist_simulator.exe -n 4 test.net
+	./netlist_simulator.exe -n 5 test.net
 
 test: test.net
 	./netlist_simulator.byte  -n 1 test.net

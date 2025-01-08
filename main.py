@@ -30,7 +30,7 @@ def main():
             there is only one ROM (could be more)
     """
     reader = ROM(addr_size_rom, word_size_rom, inst_ptr[16:32])
-    reader.rename("rom_code")
+    reader.set_as_output("rom_code")
 
     nuage = NuageLine(reader)
     #nuageline = selector.select(Constant("1111"))
@@ -42,7 +42,7 @@ def main():
         nuage
     )
 
-    registers = Registers(25, nuage, nomme_le_ta_mere)
+    registers = Registers(4, nuage, nomme_le_ta_mere)
 
     print(nuage)
 
