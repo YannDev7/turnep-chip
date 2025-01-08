@@ -216,14 +216,16 @@ def main():
             for line in file:
                 line = line.replace("\n", "")
                 line = line.split("#")[0]
-                if line and ":" not in line:
+                if line and ":" not in line and "%" not in line:
                     lines.append(line)
 
     code_rom = d["code"]
     while pc < len(code_rom):
+
+        print(f"\n\n{pc}", ":", end=" ")
+
         if lines:
             print(lines[pc])
-        print(pc, ":", end=" ")
         code = code_rom[pc]
         instr = instrf(code)
         instr_fun[instr](code)

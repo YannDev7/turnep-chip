@@ -13,6 +13,9 @@ DATA = 5
 reg_names = [
     "rax",
     "rbx",
+    "rg1",
+    "rg2",
+    "rg3",
     "rcx",
     "rdx",
     "rex",
@@ -27,11 +30,22 @@ reg_names = [
     "r8x",
     "r9x",
 
+    "r1c",
+    "r2c",
+    "r3c",
+    "r4c",
+    "r5c",
+    "r6c",
+    "r7c",
+    "r8c",
+    "r9c",
+
     "rac", # modifies potentiellement par l'appel
     "rbc",
     "rcc",
     "rdc",
     "rec",
+    "rfc",
 
     "rrt",
     "rsp",
