@@ -4,6 +4,9 @@ test.net: main.py alu.py utils.py selector.py registers.py
 testw: test.net
 	./netlist_simulator.byte -n 6 test.net
 
+testwexe: test.net
+	./netlist_simulator.exe -n 4 test.net
+
 test: test.net
 	./netlist_simulator.byte  -n 1 test.net
 	gcc simulator.c -o test

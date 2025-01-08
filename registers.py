@@ -8,7 +8,10 @@ class Registers:
                 Mux(nuage.wenable, giga_mux(nuage.raddr1,     
                 self.get_reg_muxlist(n, nuage, wdata, reg_size, i)), Defer(32, lambda: self.registers[i]))
             ) for i in range(n)]
+    
+    def get_reg_mux(self, nuage, wdata, reg_size, i):
         
+
     def get_reg_muxlist(self, n, nuage, wdata, reg_size, i):
         lst = []
 
