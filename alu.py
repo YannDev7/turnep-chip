@@ -116,11 +116,11 @@ class ALU:
 
     def lshift(self, a, b, nuage):
          #pas trouvé de meilleure façon de faire qu'un gros multiplexeur. Ne marche que sur du 32bits
-        return Mux(giga_or(listifier(b[:27])), giga_mux(b[27:], [klshift(a, k) for k in range(32)]), Constant("0"*32))
+        return Mux(giga_or(listifier(b[:27])), Constant("0"*32), giga_mux(b[27:], [klshift(a, k) for k in range(32)]))
         #derniers 5 bits suffisent à compter jusqu'à 32. Le giga_or détermine si b plus grand que 32.
     
     def rshift(self, a, b, nuage):
-        return Mux(giga_or(listifier(b[:27])), giga_mux(b[27:], [krshift(a, k) for k in range(32)]), Constant("0"*32))
+        return Mux(giga_or(listifier(b[:27])), Constant("0"*32), giga_mux(b[27:], [krshift(a, k) for k in range(32)]))
 
     def mul(self, a, b, nuage): #profondeur O((logn)^2)
         def giga_adder(lst):
