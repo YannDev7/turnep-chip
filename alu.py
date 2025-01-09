@@ -93,7 +93,8 @@ class ALU:
         return s 
     def mov(self, a, b, nuage = None):
         return b
-    
+    def QUEDALLE(self, a, b, nuage):
+        return a
     def mov_imm(self, a, b, nuage):
         return nuage.imm
     def add_imm(self, a, b, nuage):
@@ -129,10 +130,10 @@ class ALU:
         return giga_adder([klshift(And(a, b[k]), k) for k in range(32)])
     
     def mul2(self, a, b, nuage): #profondeur O(logn)
-        return self.several_adder([klshift(And(a, b[k]), k) for k in range(32)])
+        return self.several_adder([klshift(And(a, b[k]), k) for k in range(32)])        
 
     def alu_hub(self, a, b, nuage):
-        funs = [self.mov for i in range(240)]
+        funs = [self.QUEDALLE for i in range(256)]
         funs[0x01] = self.add
         funs[2] = self.sub
         funs[3] = self.xor 
@@ -142,11 +143,12 @@ class ALU:
         funs[7] = self.lshift
         funs[8] = self.rshift 
         funs[20] = self.load_rom
-        funs[233] = self.mov_imm
+        funs[0x0B] = self.mov
+        funs[0x49] = self.mov_imm
         #funs[10] = self.load_store_ram
         #funs[9] = self.load_store_ram
         funs[11] = self.mov
-        funs[0xE5] = self.add_imm
+        funs[0x45] = self.add_imm
         vals = [f(a, b, nuage) for f in funs]
         vals[1].set_as_output("add")
         return giga_mux(nuage.op, vals)

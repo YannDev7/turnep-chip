@@ -5,6 +5,7 @@ from registers import *
 from alu import *
 from selector import *
 from const import *
+from suicide import *
 """
 Conventions:
 a[0] is the MOST significant bit
@@ -20,8 +21,17 @@ def main():
 
     selector = Selector()
 
+    suicidehub = SuicideHub(
+        Defer(1, lambda: nuage.estcequejaienviedemesuiccider),
+        Defer(1, lambda: nuage.suicideimmediat),
+        Defer(1, lambda: nuage.nz),
+        Defer(32, lambda: nuage.imm),
+
+        Defer(32, lambda: registers.select_register(nuage.raddr1))
+        )
+
     inst_ptr = Defer(32, lambda: inst_ptr)
-    inst_ptr = Reg(alu.add(inst_ptr, Constant("0" * 31 + "1")))
+    inst_ptr = Reg(alu.add(inst_ptr, Defer(32, lambda: alu.add(suicidehub.jmp, Constant("0"*31 + "1")))))
     inst_ptr.set_as_output("coucou")
 
     """
