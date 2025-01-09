@@ -52,7 +52,7 @@ def main():
         nuage
     )
 
-    registers = Registers(32, nuage, nomme_le_ta_mere)
+    registers = Registers(45, nuage, nomme_le_ta_mere)
 
     nuage.raddr1.set_as_output("raddr1")
     nuage.raddr2.set_as_output("raddr2")

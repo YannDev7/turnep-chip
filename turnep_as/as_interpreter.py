@@ -136,6 +136,11 @@ def rshift(code):
 def load(code):
     r1 = reg1f(code)
     r2 = reg2f(code)
+    regs[r1] = memory[1 << 31 | regs[r2]]
+
+def loadram(code):
+    r1 = reg1f(code)
+    r2 = reg2f(code)
     regs[r1] = memory[regs[r2]]
 
 def loadimm(code):
@@ -148,14 +153,7 @@ def loadimm(code):
 def store(code):
     r1 = reg1f(code)
     r2 = reg2f(code)
-    memory[regs[r1]] = regs[r2]
-
-def storeimm(code):
-    r1 = reg1f(code)
-    imm = immf(code)
-    if imm & 0x8000:
-        imm |= 0xffff0000
-    memory[regs[r1]] = imm
+    memory[regs[r2]] = regs[r1]
 
 def mov(code):
     r1 = reg1f(code)
@@ -191,11 +189,11 @@ instr_fun = {
     0x07: lshift,
     0x08: rshift,
     0x09: load,
+    0x14: loadram,
     0x49: loadimm,
-    0x0A: store,
-    0x4A: storeimm,
+    0x2A: store,
     0x0B: mov,
-    0x0C: nonzero,
+    0x82: nonzero,
     0x80: jmp,
     0x81: jmpimm
 }

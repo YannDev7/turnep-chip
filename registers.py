@@ -1,12 +1,15 @@
 from lib_carotte import *
 from utils import *
 
+def snd(a, b):
+    return b
+
 class Registers:
     def __init__(self, n, nuage, wdata, reg_size = 32):
         wdata.set_as_output("wdata")
         self.registers = [
             Reg(
-                Mux(nuage.wenable, self.get_reg_mux(nuage, wdata, reg_size, i), Defer(32, lambda: self.registers[i]))
+                Mux(nuage.wenable, self.get_reg_mux(nuage, wdata, reg_size, i), (lambda j: Defer(32, lambda: snd(None, self.registers[j])))(i))
             ) for i in range(n)]
     
     def get_reg_mux(self, nuage, wdata, reg_size, i):

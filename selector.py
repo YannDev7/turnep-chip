@@ -12,9 +12,9 @@ class NuageLine:
         self.imm = Mux(imm16[0], Constant("1"*16), Constant("0"*16)) + imm16
         #self.op = giga_mux(self.instr_id, [Constant(bin(i)[2:].zfill(8)) for i in range(256)])
         self.op = self.instr_id
-        self.wenable = Constant("1")
-        self.wenable_ram = Constant("0")
-        self.waddr = None
+        self.wenable = Not(self.instr_id[2])
+        self.wenable.set_as_output("wenable")
+        self.wenable_ram = self.instr_id[2]
         self.estcequejaienviedemesuiccider = self.instr_id[0]
         self.suicideimmediat = self.instr_id[7]
         self.nz = self.instr_id[6]

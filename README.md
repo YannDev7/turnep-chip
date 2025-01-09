@@ -26,7 +26,7 @@ Le registre correspondant au pointeur de la rom, à partir duquel on lit les int
 | LOADROM     | 09 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
 | LOADRAM     | 14 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
 | MOVIMM      | 49 rs1 imm    |  rs1 <- imm            |
-| STORE       | 0A rs1 rs2 00 |  M[\$rs2] <- \$rs1     |
+| STORE       | 2A rs1 rs2 00 |  M[\$rs2] <- \$rs1     |
 | MOV         | 0B rs1 rs2 00 |  rs1 <- \$rs2          |
 | NONZERO     | 82 rs1 00  00 |  if \$rs1 <> 0 then PC += 1  |
 | JMP         | 80 rs1 00  00 |  PC += \$rs1           |
