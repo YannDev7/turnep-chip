@@ -19,18 +19,18 @@ Le registre correspondant au pointeur de la rom, à partir duquel on lit les int
 | XOR         | 03 rs1 rs2 00 |  rs1 <- \$rs1 ^ \$rs2  |
 | OR          | 04 rs1 rs2 00 |  rs1 <- \$rs1 \| \$rs2 |
 | AND         | 05 rs1 rs2 00 |  rs1 <- \$rs1 & \$rs2  |
-| ADDIMM      | E5 rs1 imm    |  rs1 <- imm + \$rs1    |
+| ADDIMM      | 45 rs1 imm    |  rs1 <- imm + \$rs1    |
 | NOT         | 06 rs1 rs2 00 |  rs1 <- ~\$rs2         |
 | LSHIFT      | 07 rs1 rs2 00 |  rs1 <- \$rs1 << \$rs2 |
 | RSHIFT      | 08 rs1 rs2 00 |  rs1 <- \$rs1 >> \$rs2 |
-| LOADROM        | 09 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
-| LOADRAM      | 14 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
-| MOVIMM     | E9 rs1 imm    |  rs1 <- imm            |
+| LOADROM     | 09 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
+| LOADRAM     | 14 rs1 rs2 00 |  rs1 <- M[\$rs2]       |
+| MOVIMM      | 49 rs1 imm    |  rs1 <- imm            |
 | STORE       | 0A rs1 rs2 00 |  M[\$rs2] <- \$rs1     |
 | MOV         | 0B rs1 rs2 00 |  rs1 <- \$rs2          |
-| NONZERO     | 0C rs1 00  00 |  if \$rs1 <> 0 then PC += 1  |
-| JMP         | F0 rs1 00  00 |  PC += \$rs1           |
-| JMPIMM      | F1 00  imm    |  PC += imm             |
+| NONZERO     | 82 rs1 00  00 |  if \$rs1 <> 0 then PC += 1  |
+| JMP         | 80 rs1 00  00 |  PC += \$rs1           |
+| JMPIMM      | 81 00  imm    |  PC += imm             |
 
 
 Nous prévoyons d'éventuellement ajouter les instructions suivantes (bien qu'elles ne soient pas nécessaires à la réalisation d'une horloge).

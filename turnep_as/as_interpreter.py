@@ -186,18 +186,18 @@ instr_fun = {
     0x03: xor,
     0x04: bor,
     0x05: band,
-    0xE5: addimm,
+    0x45: addimm,
     0X06: bnot,
     0x07: lshift,
     0x08: rshift,
     0x09: load,
-    0xE9: loadimm,
+    0x49: loadimm,
     0x0A: store,
-    0xEA: storeimm,
+    0x4A: storeimm,
     0x0B: mov,
     0x0C: nonzero,
-    0xF0: jmp,
-    0xF1: jmpimm
+    0x80: jmp,
+    0x81: jmpimm
 }
 import time, sys
 
