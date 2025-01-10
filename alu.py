@@ -107,9 +107,8 @@ class ALU:
         return reader
         
     def load_store_ram(self, a, b, nuage):
-        reader = RAM(addr_size_rom, word_size_rom, b[32 - addr_size_rom:32], nuage.wenable_ram, b[32 - addr_size_rom:32], a[32 - addr_size_rom:32])
-        reader.rename("ramus")
-        return Constant("0" * (32 - word_size_rom)) + reader
+        reader = RAM(addr_size_rom, word_size_rom, b[32 - addr_size_rom:32], nuage.wenable_ram, b[32 - addr_size_rom:32], a)
+        return reader
   
     def not_(self, a, b, nuage = None):
         return Not(a)
@@ -133,6 +132,8 @@ class ALU:
         return self.several_adder([klshift(And(a, b[k]), k) for k in range(32)])        
 
     def alu_hub(self, a, b, nuage):
+
+        ram = self.load_store_ram(a, b, nuage)
         funs = [self.QUEDALLE for i in range(256)]
         funs[0x01] = self.add
         funs[2] = self.sub
@@ -142,13 +143,14 @@ class ALU:
         funs[6] = self.not_
         funs[7] = self.lshift
         funs[8] = self.rshift 
-        funs[20] = self.load_rom
+        funs[0x09] = self.load_rom
         funs[0x0B] = self.mov
         funs[0x49] = self.mov_imm
-        #funs[10] = self.load_store_ram
-        #funs[9] = self.load_store_ram
+        funs[0x14] = lambda *_: ram
+        funs[0x2A] = lambda *_: ram
         funs[11] = self.mov
         funs[0x45] = self.add_imm
+        # funs[0xD] = self.mul pour aimeric
         vals = [f(a, b, nuage) for f in funs]
         vals[1].set_as_output("add")
         return giga_mux(nuage.op, vals)

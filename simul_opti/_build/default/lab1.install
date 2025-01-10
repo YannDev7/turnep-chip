@@ -1,0 +1,7 @@
+lib: [
+  "_build/install/default/lib/lab1/META"
+  "_build/install/default/lib/lab1/dune-package"
+]
+doc: [
+  "_build/install/default/doc/lab1/README.md"
+]

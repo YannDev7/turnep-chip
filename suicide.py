@@ -1,6 +1,6 @@
 
 from selector import *
-
+from utils import *
 
 class SuicideHub:
     def __init__(self, estcequejaienviedemesuiccider, suicideimmediat, nz, imm, reg_data):

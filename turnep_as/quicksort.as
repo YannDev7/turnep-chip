@@ -10,23 +10,16 @@
 
 
 
+MOV rdx $0
+LOADROM r1x rdx
 
-MOV rdx $1  # tout ça juste pour lire le premier element de la rom et le mettre dans rdx
-MOV r1x $31
-LSHIFT rdx r1x
-LOAD r1x rdx
-
-MOV rbx rdx  # addresse de ROM
 MOV rsp $0  # addresse de RAM
 
 romtoramloop:
 ADD rsp $1
 
-MOV rbx rdx
-ADD rbx rsp
-
-LOAD rax rbx
-STORE rsp rax
+LOADROM rax rsp
+STORE rax rsp
 
 MOV r2x r1x
 SUB r2x rsp
@@ -38,11 +31,12 @@ endloop1:
 MOV rbp rsp
 
 ADD rsp $1 # ajoute [1, n[ au stack
-STORE rsp $1
+MOV rdc $1
+STORE rdc rsp
 ADD rsp $1
 MOV rac rbp
 ADD rac $1
-STORE rsp rac
+STORE rac rsp
 
 JMP 'quicksort
 
@@ -58,9 +52,9 @@ SUB rac rbp
 NONZERO rac
 JMP 'end  # la pile d'appel est vide
 
-LOAD r2x rsp
+LOADRAM r2x rsp
 ADD rsp X$ffff
-LOAD r1x rsp
+LOADRAM r1x rsp
 ADD rsp X$ffff
 
 # on trie le tableau sur l'intervalle [r1x, r2x[
@@ -73,7 +67,7 @@ JMP 'quicksort
 MOV r3x r1x
 MOV r4x r2x
 
-LOAD rdx r1x  # pivot
+LOADRAM rdx r1x  # pivot
 ADD r3x $1
 
 partitionLoop:
@@ -83,7 +77,7 @@ NONZERO rac
 JMP 'quicksortEnd
 
 MOV rax rdx
-LOAd rbx r3x
+LOADRAM rbx r3x
 
 MOV rrt 'lesserRet->quicksortHere
 JMP 'lesser
@@ -100,30 +94,30 @@ JMP 'partitionLoop
 
 greaterThanPivot:
 ADD r4x x$ffff
-LOAD rac r4x
-STORE r4x rbx
-STORE r3x rac
+LOADRAM rac r4x
+STORE rbx r4x
+STORE rac r3x
 JMP 'partitionLoop
 
 
 quicksortEnd:
 
-LOAD rac r1x
+LOADRAM rac r1x
 ADD r3x X$ffff
-LOAD rbc r3x
-STORE r1x rbc
-STORE r3x rac
+LOADRAM rbc r3x
+STORE rbc r1x
+STORE rac r3x
 
 ADD rsp $1
-STORE rsp r1x
+STORE r1x rsp
 ADD rsp $1
-STORE rsp r3x
+STORE r3x rsp
 
 ADD r3x $1
 ADD rsp $1
-STORE rsp r3x
+STORE r3x rsp
 ADD rsp $1
-STORE rsp r2x
+STORE r2x rsp
 
 JMP 'quicksort
 
@@ -142,6 +136,23 @@ JMP rrt
 
 
 end:
+
+MOV rac $19
+LOADRAM r1x rac
+MOV rac $21
+LOADRAM r2x rac
+MOV rac $22
+LOADRAM r3x rac
+MOV rac $23
+LOADRAM r4x rac
+MOV rac $24
+LOADRAM r5x rac
+MOV rac $25
+LOADRAM r6x rac
+MOV rac $26
+LOADRAM r7x rac
+
+
 
 
 .data
