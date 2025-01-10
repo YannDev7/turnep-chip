@@ -50,7 +50,7 @@ class ALU:
 
     def _several_adder(self, lst2):
         if len(lst2[0]) == 2:
-            return self.carry_lookahead_adder([lst2[i][0] for i in range(len(lst2))], [lst2[i][1] for i in range(len(lst2))])
+            return self.carry_lookahead_adder(concatlst([lst2[i][0] for i in range(len(lst2))]), concatlst([lst2[i][1] for i in range(len(lst2))]))
         nbtruples, reste = divmod(len(lst2[0]), 3)
         suivants = [list() for _ in range(len(lst2))]
         for i in range(nbtruples):
