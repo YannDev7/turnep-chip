@@ -150,6 +150,7 @@ class ALU:
         funs[0x2A] = lambda *_: ram
         funs[11] = self.mov
         funs[0x45] = self.add_imm
+        funs[0xD] = self.mul
         vals = [f(a, b, nuage) for f in funs]
         vals[1].set_as_output("add")
         return giga_mux(nuage.op, vals)
