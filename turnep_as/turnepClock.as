@@ -470,7 +470,7 @@ fin:
 .data
 31 # jour
 12 # mois
-2024 # annee
+2024004 # annee
 23 # heure
 59 # minutes
 57 # secondes
