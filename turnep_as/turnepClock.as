@@ -27,46 +27,33 @@
 
 MOV @treize $13
 
-MOV rac $1
-MOV rbc $31
-LSHIFT rac rbc
 
-# rac contient l'offset des addresses pour la rom
 MOV rcc $0
-OR rcc rac
-LOAD @jour rcc # jour
+LOADROM @jour rcc # jour
 
 MOV rcc $1
-OR rcc rac
-LOAD @mois rcc # mois
+LOADROM @mois rcc # mois
 
 MOV rcc $2
-OR rcc rac
-LOAD @annee rcc # annee
+LOADROM @annee rcc # annee
 
 MOV rcc $3
-OR rcc rac
-LOAD @heure rcc # heure
+LOADROM @heure rcc # heure
 
 MOV rcc $4
-OR rcc rac
-LOAD @minutes rcc # minutes
+LOADROM @minutes rcc # minutes
 
 MOV rcc $5
-OR rcc rac
-LOAD @secondes rcc # secondes
+LOADROM @secondes rcc # secondes
 
 MOV rcc $6
-OR rcc rac
-LOAD @cycleCount rcc # nombre de tours par seconde
+LOADROM @cycleCount rcc # nombre de tours par seconde
 
-MOV @compteur $25
-
-
+MOV @compteur $16
 
 cycleSeconde:
 
-
+ADD @compteur $63
 # 1: on determine si l'annee est bissextile (on peut faire ca chaque seconde, on a du temps)
 
 MOV rrt 'finAnneeBissextile->finEtape1
@@ -264,7 +251,7 @@ ADD r3c rdc
 JMP 'fin
 
 
-
+# au final on l'utilise pas
 mult:
 MOV rac $1
 AND rac @arg2mul
@@ -292,16 +279,15 @@ JMP rrt
 
 
 
-
+# ajoute aussi son temps d'execution a @compteur
 divisiblePar25:
-
 MOV rac x$ffe0
 MOV rbc @arg1
 AND rbc rac
 NONZERO rbc
 JMP 'plusPetitQue32
 
-
+ADD @compteur $11
 MOV rbc $1
 
 MOV rcc @arg1
@@ -313,18 +299,21 @@ NONZERO rcc
 JMP 'divisiblePar25
 
 ADD @arg1 $13
+ADD @compteur $2
 JMP 'divisiblePar25
 
 plusPetitQue32:
-
+ADD @compteur $11
 NONZERO @arg1
 JMP 'ouiCestDivisiblePar25
 
 MOV rac $25
 SUB @arg1 rac
+ADD @compteur $4
 NONZERO @arg1
 JMP 'ouiCestDivisiblePar25
 
+ADD @compteur $1
 MOV @valDeRetour $0
 JMP 'finDivisiblePar25
 
@@ -335,11 +324,11 @@ finDivisiblePar25:
 JMP rrt
 
 
-
+# ajoute aussi son temps d'execution a @compteur
 anneeBissextile:
 # 100 = 2*2*25
 # 400 = 2*2*2*2*25
-
+ADD @compteur $10
 MOV rac b$1111
 MOV rbc b$11
 
@@ -349,22 +338,30 @@ AND rcc rac
 NONZERO rcc
 JMP 'ouiCestBissextile  # c'est divisible par 16 donc ok
 
+
 MOV rcc @annee
 AND rcc rbc
+ADD @compteur $3
+
 NONZERO rcc
 JMP 'peutEtreBissextile
 
 MOV @valDeRetour $0  # non divisible par 4 => non bissextile
+ADD @compteur $2
 JMP 'finAnneeBissextile
 
 peutEtreBissextile:
+ADD @compteur $7
 MOV @arg1 @annee
+MOV rbp rrt
 MOV rrt 'finDivisiblePar25->aBici
 JMP 'divisiblePar25
 aBici:
+MOV rrt rbp
 NONZERO rcx
-JMP 'ouiCestBissextile # non divisible par 25 => non divisible par 100
+JMP 'ouiCestBissextileMaisFautAjouterDesTrucs # non divisible par 25 => non divisible par 100
 
+ADD @compteur $2
 MOV @valDeRetour $0  # divisible par 25 et par 4 => divisible par 100
 # mais non divisible par 8 => non divisible par 400
 JMP 'finAnneeBissextile
@@ -375,8 +372,9 @@ MOV @valDeRetour $1
 finAnneeBissextile:
 JMP rrt
 
-
-
+ouiCestBissextileMaisFautAjouterDesTrucs:
+ADD @compteur $3
+JMP 'ouiCestBissextile
 
 fin:
 
@@ -391,7 +389,7 @@ fin:
 .data
 31 # jour
 12 # mois
-24001 # annee
+1400 # annee
 23 # heure
 59 # minutes
 59 # secondes
