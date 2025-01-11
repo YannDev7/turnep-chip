@@ -49,7 +49,7 @@ LOADROM @secondes rcc # secondes
 MOV rcc $6
 LOADROM @cycleCount rcc # nombre de tours par seconde
 
-MOV @compteur $16
+MOV @compteur $17
 
 cycleSeconde:
 
@@ -248,7 +248,88 @@ e7endif:
 MOV r3c @annee
 ADD r3c rdc
 
-JMP 'fin
+
+
+# 9: maintenant faut attendre jusqu'a la fin
+# on va faire en sorte que le nombre de cycles depuis le debut de la seconde soit un multiple de 4
+
+MOV rfc @compteur
+
+ADD @compteur $1
+ADD @compteur $2
+ADD @compteur $1
+ADD @compteur $1
+
+ADD @compteur $8
+
+
+MOV rac b$11
+MOV rbc @compteur
+AND rbc rac  # rbc vaut compteur mod 4
+
+ADD rbc rbc
+ADD rbc rbc  # rbc vaut compteur mod 4 * 4
+JMP rbc
+
+JMP 'etape9fin # 0
+ADD rac $0 # PAD 1
+ADD rac $0 # PAD 2
+ADD rac $0 # PAD 3
+
+ADD @compteur $3 #4
+ADD rac $0 # PAD 5
+ADD rac $0 # PAD 6
+JMP 'etape9fin # 7
+
+ADD @compteur $2 #8
+ADD rac $0 # PAD 9
+JMP 'etape9fin # 10
+ADD rac $0 # PAD 11
+
+ADD @compteur $1 #12
+JMP 'etape9fin # 13
+ADD rac $0 # PAD 14
+ADD rac $0 # PAD 15
+
+etape9fin:
+
+# ici, compteur (et le nombre de cycles depuis le debut) est un multiple de 4
+
+
+MOV rac @cycleCount
+MOV rbc @compteur
+ADD rbc $16
+SUB rac rbc
+
+boucleAttente:
+ADD rac x$fffc
+ADD @compteur $4
+NONZERO rac
+JMP 'etape10fin
+JMP 'boucleAttente
+
+etape10fin:
+
+ADD @compteur $5
+
+
+MOV @compteur $1
+
+ADD rac $0
+ADD rac $0
+ADD rac $0
+ADD rac $0
+ADD rac $0
+
+
+MOV r1x r1c
+MOV r2x r2c
+MOV r3x r3c
+MOV r4x r4c
+MOV r5x r5c
+MOV r6x r6c
+
+JMP 'cycleSeconde
 
 
 # au final on l'utilise pas
@@ -389,12 +470,12 @@ fin:
 .data
 31 # jour
 12 # mois
-1400 # annee
+2024 # annee
 23 # heure
 59 # minutes
-59 # secondes
+57 # secondes
 
-10000000 # nombre de tours par seconde
+1000 # nombre de tours par seconde
 
 
 

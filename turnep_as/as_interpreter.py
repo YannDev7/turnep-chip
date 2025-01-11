@@ -222,8 +222,8 @@ def main():
     code_rom = d["code"]
     while pc < len(code_rom):
 
-        print(f"\n\n{pc}", ":", end=" ")
-
+        print(f"\n\n{cycle_count +1}, {pc}: ", end=" ")
+        
         if lines:
             print(lines[pc])
         code = code_rom[pc]
@@ -244,7 +244,8 @@ def main():
                 except Exception:
                     print("error")
                 i = input()
-
+        if (cycle_count +1) % 1000 == 0:
+            input()
         cycle_count += 1
 
     print(*regs[1:33])
