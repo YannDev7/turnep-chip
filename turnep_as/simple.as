@@ -1,6 +1,6 @@
-MOV rax $1
-MOV rax $6
-
+MOV rax $8
+MOV rdx $7
+SUB rax rdx
 
 
 .data
