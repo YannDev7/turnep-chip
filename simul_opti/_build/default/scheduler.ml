@@ -33,6 +33,11 @@ let read_exp eq =
                         |Avar(f1), _ -> [ f1]
                         | _, Avar(f1)-> [ f1]
                         |_ -> [])
+  |Erom(_,_,f2) -> (
+               match f2 with 
+               | Avar(f) -> [f]
+               | _ -> []
+              )
   |_ -> []
 
   
