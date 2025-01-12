@@ -39,7 +39,7 @@ class ALU:
         for i in range(a.bus_size-1):
             clst.append(giga_xor([And(propagee(i+1, j), creeret[j]) for j in range(i+2, a.bus_size-1)] +[creeret[i+1], And(propagee(i+1, a.bus_size), c)]))
         clst.append(c)
-        sortie = Xor(Xor(clst, a), b)
+        sortie = Xor(Xor(concatlst(clst), a), b)
         csortie = giga_xor([And(propagee(0, j), creeret[j]) for j in range(1, a.bus_size-1)]+[creeret[0], And(propagee(0, a.bus_size), c)]) #pourrait aussi être un or
         return (sortie, csortie)
 
@@ -50,7 +50,7 @@ class ALU:
 
     def _several_adder(self, lst2):
         if len(lst2[0]) == 2:
-            return self.carry_lookahead_adder(concatlst([lst2[i][0] for i in range(len(lst2))]), concatlst([lst2[i][1] for i in range(len(lst2))]))
+            return self.n_adder(concatlst([lst2[i][0] for i in range(len(lst2))]), concatlst([lst2[i][1] for i in range(len(lst2))]))[0]
         nbtruples, reste = divmod(len(lst2[0]), 3)
         suivants = [list() for _ in range(len(lst2))]
         for i in range(nbtruples):
@@ -126,10 +126,10 @@ class ALU:
             if len(lst) == 1:
                 return lst[0]
             return self.n_adder(giga_adder(lst[:len(lst) // 2]), giga_adder(lst[len(lst) // 2:]))[0]
-        return giga_adder([klshift(And(a, Mux(b[k], Constant("1"*32), Constant("0"*32))), k) for k in range(32)])
+        return giga_adder([klshift(And(a, Mux(b[31-k], Constant("1"*32), Constant("0"*32))), k) for k in range(32)])
     
     def mul2(self, a, b, nuage): #profondeur O(logn)
-        return self.several_adder([klshift(And(a, Mux(b[k], Constant("1"*32), Constant("0"*32))), k) for k in range(32)])        
+        return self.several_adder([klshift(And(a, Mux(b[31-k], Constant("1"*32), Constant("0"*32))), k) for k in range(32)])        
 
     def alu_hub(self, a, b, nuage):
 
@@ -150,7 +150,7 @@ class ALU:
         funs[0x2A] = lambda *_: ram
         funs[11] = self.mov
         funs[0x45] = self.add_imm
-        # funs[0xD] = self.mul pour aimeric
+        funs[0xD] = self.mul2
         vals = [f(a, b, nuage) for f in funs]
         vals[1].set_as_output("add")
         return giga_mux(nuage.op, vals)
