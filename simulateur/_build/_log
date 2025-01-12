@@ -1,0 +1,19 @@
+### Starting build.
+# Target: netlist_simulator.ml.depends, tags: { extension:ml, file:netlist_simulator.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules netlist_simulator.ml > netlist_simulator.ml.depends
+# Target: graph.ml.depends, tags: { extension:ml, file:graph.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules graph.ml > graph.ml.depends
+# Target: netlist.ml.depends, tags: { extension:ml, file:netlist.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules netlist.ml > netlist.ml.depends
+# Target: netlist_lexer.mll, tags: { extension:mll, file:netlist_lexer.mll, lexer, ocaml, ocamllex, quiet }
+ocamllex.opt -q netlist_lexer.mll
+# Target: netlist_lexer.ml.depends, tags: { extension:ml, file:netlist_lexer.ml, ocaml, ocamldep, quiet }
+ocamldep.opt -modules netlist_lexer.ml > netlist_lexer.ml.depends
+# Target: netlist_parser.mly, tags: { extension:mly, file:netlist_parser.mly, infer, ocaml, ocamlyacc, parser, quiet }
+ocamlyacc netlist_parser.mly
++ ocamlyacc netlist_parser.mly
+File "netlist_parser.mly", line 38: unterminated action
+  INPUT inp=separated_list(COMMA, NAME)
+           ^
+Command exited with code 1.
+# Compilation unsuccessful.
