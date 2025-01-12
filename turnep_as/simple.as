@@ -1,9 +1,5 @@
-
-
-ADD   rax $10
-ADD   rbx $50
-MOV   rcx rax
-MOV  rax $32
+MOV rax $1
+MOV rax $6
 
 
 
