@@ -59,7 +59,7 @@ def krshift(a, k):
 
 def concatlst(lst):
     b = lst[0]
-    for i in lst[i:]:
+    for i in lst[1:]:
         b += i
     return b
 
