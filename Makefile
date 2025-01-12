@@ -2,7 +2,7 @@ test.net: main.py alu.py utils.py selector.py registers.py
 	carotte/carotte.py -o $@ main.py
 
 testass:
-	python3 turnep_as/assemble.py turnep_as/quicksort.as
+	python3 turnep_as/assemble.py turnep_as/shift.as
 	./netlist_simulator.byte -n 4 test.net
 
 testw: test.net
@@ -15,6 +15,10 @@ test: test.net
 	./netlist_simulator.byte  -n 1 test.net
 	gcc simulator.c -o test
 	
+testoptiexe: test.net
+	./netlist_simulator_opti.exe -n 5 test.net
+	gcc simulator.c -o test
+
 run: test
 	./test
 

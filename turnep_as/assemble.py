@@ -254,7 +254,7 @@ def main():
                 print(f"[{name}]")
                 print(*[phex(a) for a in dt], sep="\n")
                 print(*[bin(a)[2:].zfill(32) for a in dt], sep="\n", end="", file=data_file)
-            print("0"*32, file=data_file, end="")
+            print("\n"+"0"*32, file=data_file, end="")
 
 
 

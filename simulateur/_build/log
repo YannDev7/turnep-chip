@@ -1,4 +1,4 @@
-# dune build ./netlist_simulator.exe
+# dune build
 # OCAMLPARAM: unset
 # Shared cache: enabled-except-user-rules
 # Shared cache location: /home/zalto/.cache/dune/db
@@ -13,4 +13,4 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /home/zalto/.opam/default/bin/ocamlc.opt -config > /tmp/dune_9e9ae6_output
+$ /home/zalto/.opam/default/bin/ocamlc.opt -config > /tmp/dune_7af0ed_output

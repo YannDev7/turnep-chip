@@ -1,10 +1,9 @@
-# dune build
+# dune build ./netlist_simulator.exe
 # OCAMLPARAM: unset
-# Shared cache: disabled
-# Shared cache location: /home/paul/.cache/dune/db
-# Workspace root:
-# /home/paul/Documents/Travail/ENS/L3/Info/Sysnum/sysnum-2024/project/turnep-chip/simul_opti
-# Auto-detected concurrency: 16
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /home/zalto/.cache/dune/db
+# Workspace root: /home/zalto/Rp/turnep-chip/simul_opti
+# Auto-detected concurrency: 18
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -14,4 +13,4 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
-$ /usr/bin/ocamlc.opt -config > /tmp/dune_373e62_output
+$ /home/zalto/.opam/default/bin/ocamlc.opt -config > /tmp/dune_5efe26_output
