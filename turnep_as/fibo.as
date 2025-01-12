@@ -17,6 +17,7 @@ JMP   'end
 JMP   'fibo
 
 end:
+    MOV rbx $42
 
 .data
 

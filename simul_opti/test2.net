@@ -1,0 +1,5 @@
+INPUT x
+OUTPUT o, x    
+VAR x : 32, o 
+IN 
+o = SELECT 30 x
