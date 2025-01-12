@@ -1,9 +1,10 @@
 # dune build
 # OCAMLPARAM: unset
-# Shared cache: enabled-except-user-rules
-# Shared cache location: /home/zalto/.cache/dune/db
-# Workspace root: /home/zalto/Rp/turnep-chip/simulateur
-# Auto-detected concurrency: 18
+# Shared cache: disabled
+# Shared cache location: /home/paul/.cache/dune/db
+# Workspace root:
+# /home/paul/Documents/Travail/ENS/L3/Info/Sysnum/sysnum-2024/project/turnep-chip/simulateur
+# Auto-detected concurrency: 16
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -13,4 +14,8 @@
 #  ; build_dir = In_build_dir "default"
 #  ; instrument_with = []
 #  }
+<<<<<<< HEAD
 $ /home/zalto/.opam/default/bin/ocamlc.opt -config > /tmp/dune_7af0ed_output
+=======
+$ /usr/bin/ocamlc.opt -config > /tmp/dune_1a7234_output
+>>>>>>> 763b5d5421c92390f584998fffd41e01bea67e16

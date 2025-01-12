@@ -1,4 +1,4 @@
-(lang dune 3.17)
+(lang dune 3.16)
 (name lab1)
 (sections (lib .) (doc ../../doc/lab1))
 (files (lib (META dune-package)) (doc (README.md)))
