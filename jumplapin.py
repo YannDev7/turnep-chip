@@ -2,7 +2,7 @@
 from selector import *
 from utils import *
 
-class SuicideHub:
+class JumpLapin:
     def __init__(self, estcequejaienviedemesuiccider, suicideimmediat, nz, imm, reg_data):
         truc = giga_or(listifier(reg_data))
         truc.set_as_output("truc")

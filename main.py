@@ -5,7 +5,7 @@ from registers import *
 from alu import *
 from selector import *
 from const import *
-from suicide import *
+from jumplapin import *
 """
 Conventions:
 a[0] is the MOST significant bit

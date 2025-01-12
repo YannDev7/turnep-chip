@@ -48,3 +48,39 @@ Nous prévoyons d'éventuellement ajouter les instructions suivantes (bien qu'el
 
 Cela fait au total 20 instructions, on a donc 2 places disponibles pour en ajouter de nouvelles.
 
+### Modulabilité du code
+Le code est découpé en plusieurs fichiers:
+
+- utils.py: contient des fonctions utilitaires (typiquement giga_mux, giga_or etc)
+- selector.py: contient la définition du nuage (qui encapsule toutes les informations devant être passées en argument à des fonctions de l'ALU).
+- registers.py: permet de créer les registres et s'occupe aussi de la sélection de registres (avec un giga_mux)
+- alu.py: contient les fonctions relatives à l'ALU. En particulier, la sélection d'instruction est réalisée avec un simple giga_mux.
+- jumplapin.py: gère les MUX pour calculer le jump à faire à chaque cycle
+- main.py: connecte tout le circuit et gère le pointeur de code PC.
+Remarque: quoi qu'il arrive, le pointeur de pile est incrémenté et NONZERO l'augmente une fois de plus.
+
+Le code a été écrit de sorte à ce qu'il soit facilement modulable. Le nombre de registres, la taille des adresses etc peuvent être modifiés facilement.
+
+De plus, il est aisé d'ajouter de nouvelles instructions (ajouter une ligne dans alu.py).
+
+### Clock
+
+La clock supporte les années bissextiles, les changements d'heure et le jour de la semaine.
+
+TODO: détail du fonctionnement
+
+### Simulateur
+
+Le simulateur est un programme qui compile la netlist vers C.
+
+Quelques optimisations ont été effectuées (utilisation de pragma) pour compenser la perte de performance due à:
+    - la modularité du code
+    - le nombre de registres
+    - les fonctionnalités étendues de la clock
+    - carrotte.py
+
+Idéalement, nous comptions aussi écrire un compresseur de netlist.
+
+### Fonctionnalités du proceseur
+    - Il supporte une multiplication efficace
+    - Il supporte un carry look ahead adder
