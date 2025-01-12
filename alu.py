@@ -126,10 +126,10 @@ class ALU:
             if len(lst) == 1:
                 return lst[0]
             return self.n_adder(giga_adder(lst[:len(lst) // 2]), giga_adder(lst[len(lst) // 2:]))[0]
-        return giga_adder([klshift(And(a, b[k]), k) for k in range(32)])
+        return giga_adder([klshift(And(a, concatlst([b[k]]*32)), k) for k in range(32)])
     
     def mul2(self, a, b, nuage): #profondeur O(logn)
-        return self.several_adder([klshift(And(a, b[k]), k) for k in range(32)])        
+        return self.several_adder([klshift(And(a, concatlst([b[k]]*32)), k) for k in range(32)])        
 
     def alu_hub(self, a, b, nuage):
 
