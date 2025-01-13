@@ -21,7 +21,7 @@ def main():
 
     selector = Selector()
 
-    suicidehub = SuicideHub(
+    suicidehub = JumpLapin(
         Defer(1, lambda: nuage.estcequejaienviedemesuiccider),
         Defer(1, lambda: nuage.suicideimmediat),
         Defer(1, lambda: nuage.nz),
