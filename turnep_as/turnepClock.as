@@ -6,6 +6,7 @@
 % heure = r4x
 % minutes = r5x
 % secondes = r6x
+% jourDeLaSemaine = r7x
 % cycleCount = r9x
 
 % arg1 = rax
@@ -249,6 +250,93 @@ MOV r3c @annee
 ADD r3c rdc
 
 
+# nouveau 9 avant l'ancien 9: jour de la semaine
+
+ADD @compteur $13
+
+MOV rac r2c
+MOV r2y r2c
+MOV r3y r3c
+
+ADD rac $1
+
+MOV rbc x$fffc
+AND rac rbc  # rac <> 0 ssi r2c > 2
+
+NONZERO rac
+JMP 'e9previf
+JMP 'e9prevelse
+
+e9previf:
+ADD r2y $13
+ADD r3y x$ffff
+JMP 'e9prevfin
+
+e9prevelse:
+ADD r2y $1
+ADD r3y $0
+JMP 'e9prevfin
+
+e9prevfin:
+
+
+% j = r4y
+% k = r5y
+% mp = r2y
+
+% h = r6y
+
+# terme 1
+MOV @h r1c
+
+# calcul de j et k
+MOV rg1 r3y
+MOV rrt 'finDivision100->e9Pici1
+JMP 'division100
+e9Pici1:
+MOV @k rg3
+MOV @j rg2
+
+# terme 2
+MOV rg1 @mp
+MUL rg1 @treize
+
+MOV rrt 'finDivision5->e9Pici2
+JMP 'division5
+e9Pici2:
+ADD @h rg1
+
+# terme 3
+ADD @h @k
+
+# terme 4
+MOV rac $2
+RSHIFT @k rac
+ADD @h @k
+
+# terme 6
+MOV rac @j
+ADD rac rac
+ADD rac rac
+ADD rac @j
+ADD @h rac
+
+# terme 5
+MOV rac $2
+RSHIFT @j rac
+ADD @h @j
+
+ADD @h $5 # pour date iso
+
+# mod 7
+MOV rg1 @h
+MOV rrt 'finDivision7->e9Pici3
+JMP 'division7
+e9Pici3:
+
+ADD rg1 $1
+MOV r7c rg1
+ADD @compteur $30
 
 # 9: maintenant faut attendre jusqu'a la fin
 # on va faire en sorte que le nombre de cycles depuis le debut de la seconde soit un multiple de 4
@@ -328,6 +416,8 @@ MOV r3x r3c
 MOV r4x r4c
 MOV r5x r5c
 MOV r6x r6c
+MOV r7x r7c
+
 
 JMP 'cycleSeconde
 
@@ -457,6 +547,123 @@ ouiCestBissextileMaisFautAjouterDesTrucs:
 ADD @compteur $3
 JMP 'ouiCestBissextile
 
+
+### DIV BY 100
+
+% a = rg1
+% c = rcc
+% d = rdc
+
+
+division100:
+ADD @compteur $27
+MOV rac $2
+MOV rbc $123
+MOV rec $17
+MOV rfc $20
+MOV rbp $8
+
+MOV @c @a
+RSHIFT @a rac
+
+MOV rsp @a
+MUL rsp rbc
+
+MUL @a rfc
+LSHIFT @a rbp
+ADD @a rsp
+
+RSHIFT @a rec
+
+MOV @d @a
+MOV rg2 @d
+
+LSHIFT @d rac
+MOV @a @d
+RSHIFT @d rac
+
+ADD @a @d
+
+MOV @d @a
+LSHIFT @d rac
+
+ADD @a @d
+
+LSHIFT @a rac
+
+SUB @c @a
+
+MOV rg3 @c
+finDivision100:
+JMP rrt
+
+### DIV BY 5
+
+division5:
+ADD @compteur $12
+MOV rac $205
+MOV rbc $204
+MOV rec $18
+MOV rdc $8
+
+MOV @c @a
+
+MUL @c rbc
+LSHIFT @c rdc
+
+MUL @a rac
+ADD @a @c
+
+RSHIFT @a rec
+
+finDivision5:
+JMP rrt
+
+### DIV BY 7
+
+
+division7:
+ADD @compteur $28
+MOV rac $1
+MOV rbc $147
+MOV rec $16
+MOV rfc $36
+MOV rbp $8
+
+MOV @d @a
+
+MOV rsp @d
+MUL rsp rbc
+
+MUL @d rfc
+LSHIFT @d rbp
+ADD @d rsp
+
+MOV @c @d
+RSHIFT @c rec
+MOV @d @a
+SUB @d @c
+RSHIFT @d rac
+
+ADD @d @c
+MOV @c @d
+
+MOV rac $2
+RSHIFT @c rac
+MOV @d @c
+MOV rac $3
+LSHIFT @d rac
+
+SUB @d @c
+SUB @a @d
+MOV @c @a
+
+finDivision7:
+JMP rrt
+
+
+
+
 fin:
 
 
@@ -468,9 +675,9 @@ fin:
 
 
 .data
-31 # jour
-12 # mois
-2024004 # annee
+13 # jour
+1 # mois
+2025 # annee
 23 # heure
 59 # minutes
 57 # secondes

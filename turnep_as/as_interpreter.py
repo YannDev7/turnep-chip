@@ -92,6 +92,11 @@ def add(code):
     r2 = reg2f(code)
     regs[r1] = u32add(regs[r1], regs[r2])
 
+def mul(code):
+    r1 = reg1f(code)
+    r2 = reg2f(code)
+    regs[r1] = (regs[r1] * regs[r2]) & 0xffffffff
+
 def sub(code):
     r1 = reg1f(code)
     r2 = reg2f(code)
@@ -195,7 +200,8 @@ instr_fun = {
     0x0B: mov,
     0x82: nonzero,
     0x80: jmp,
-    0x81: jmpimm
+    0x81: jmpimm,
+    0x0D: mul
 }
 import time, sys
 

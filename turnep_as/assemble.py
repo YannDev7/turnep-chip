@@ -49,8 +49,19 @@ reg_names = [
 
     "rrt",
     "rsp",
-    "rbp"
+    "rbp",
+
+    "r1y",
+    "r2y",
+    "r3y",
+    "r4y",
+    "r5y",
+    "r6y",
+    "r7y",
+    "r8y"
 ]
+#print(len(reg_names))
+
 reg_name_to_id = {name: i for (i, name) in enumerate(reg_names, 1)}
 
 

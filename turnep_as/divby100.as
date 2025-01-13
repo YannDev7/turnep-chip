@@ -19,14 +19,21 @@ JMP 'fin
 
 division100:
 MOV rac $2
-MOV rbc $5243
+MOV rbc $123
 MOV rec $17
-MOV rfc $1
-
+MOV rfc $20
+MOV rbp $8
 
 MOV @c @a
 RSHIFT @a rac
-MUL @a rbc
+
+MOV rsp @a
+MUL rsp rbc
+
+MUL @a rfc
+LSHIFT @a rbp
+ADD @a rsp
+
 RSHIFT @a rec
 
 MOV @d @a
