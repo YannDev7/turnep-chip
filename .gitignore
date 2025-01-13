@@ -4,6 +4,13 @@ powerpoint.synctex.gz
 
 turned_as/__pycache__/
 
+*.cmi 
+*.cmo 
+*.cmt 
+*.cmti  
+*.cmx 
+*.o
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

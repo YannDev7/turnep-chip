@@ -169,7 +169,7 @@ let deal_with_exp exp  types vars   =
                                                           | _ -> Printf.fprintf oc "\t\tuint64_t v_%d = %d%s%d;\nint v_%d_taille = %d\n" (find_vars vars name) (int_of_value val1) (string_of_ope ope) (int_of_value val2) (find_vars vars name) len)
                                   )
   | Emux (choice, arg1, arg2) -> (
-                                  match choice with 
+                                  (*match choice with 
                                   |Avar(id) -> (Printf.fprintf oc "uint64_t v_%d; uint64_t v_%d_taille;\nif (v_%d){\n\t\t\t\t  v_%d = " (find_vars vars name) (find_vars vars name) (find_vars vars id) (find_vars vars name); 
                                                 (match arg1 with
                                                   |Avar(id1) -> Printf.fprintf oc "v_%d;\n\t\t\t  v_%d_taille = v_%d_taille;\n}\n" (find_vars vars id1) (find_vars vars name) (find_vars vars id1) 
@@ -187,7 +187,18 @@ let deal_with_exp exp  types vars   =
                                     (match arg2 with
                                       |Avar(id1) -> Printf.fprintf oc "v_%d;\n\t\t\t  v_%d_taille = v_%d_taille;\n}\n" (find_vars vars id1) (find_vars vars name) (find_vars vars id1) 
                                       |Aconst(value) -> Printf.fprintf oc "%d;\n\t\t\t  v_%d_taille = %d;\n}\n" (int_of_value value) (find_vars vars name) (len_value value))
-                                      )
+                                      )*)
+
+    let get_val truc = match truc with
+      | Avar (id) -> ("v_"^(string_of_int(find_vars vars id))), ("v_"^(string_of_int (find_vars vars id))^"_taille" )
+      | Aconst (value) -> (string_of_int (int_of_value value)), (string_of_int(len_value value))
+    in 
+    let vc, szc = get_val choice in
+    let v1, sz1 = get_val arg1 in 
+    let v2, sz2 = get_val arg2 in 
+    Printf.fprintf oc "uint64_t v_%d = quoicoumux(%s, %s, %s);\n" (find_vars vars name) vc v1 v2;
+    Printf.fprintf oc "uint64_t v_%d_taille = %s;\n" (find_vars vars name) sz1;
+
   )
   |Econcat(arg1, arg2) -> (match arg1, arg2 with
                             |Avar(id1), Avar(id2) -> Printf.fprintf oc "\t\tuint64_t v_%d = (v_%d << v_%d_taille) + v_%d;\n\t\tuint64_t v_%d_taille = v_%d_taille + v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (find_vars vars id2) (find_vars vars id2) (find_vars vars name) (find_vars vars id1) (find_vars vars id2) 
@@ -213,8 +224,15 @@ let rec expo x n =
 
 
 let simulator program number_steps = 
+
+  (*  Fast compile g++ -O3 -march=native -mtune=native -flto -ffast-math -funroll-loops simulator2.c -o simulator *)
   Printf.printf "here\n";
   Printf.fprintf oc "#include<stdlib.h>\n#include<stdio.h>\n#include<stdint.h>\n#include<inttypes.h>\n\n";
+  Printf.fprintf oc "#pragma GCC optimize(\"O3,unroll-loops\")\n
+#pragma GCC target(\"avx2,popcnt,lzcnt,abm,bmi,bmi2,sse4.2,fma,tune=native\")\n
+#pragma GCC optimize(\"fast-math\")\n
+#pragma GCC prefetch\n";
+
   Printf.fprintf oc "uint64_t binaryToDecimal(uint64_t n){\n\tuint64_t num = n;\n\tuint64_t dec_value = 0;\n\tuint64_t base = 1;\n\tuint64_t temp = num;\n\twhile (temp) {\n\t\tuint64_t last_digit = temp %% 10;\n\t\ttemp = temp / 10;\n\t\tdec_value += last_digit * base;\n\t\tbase = base * 2;\n\t}\n\treturn dec_value;\n}\n";
   Printf.fprintf oc "uint64_t stringToDecimal(char* c, int n){
 	uint64_t res = 0;
@@ -223,6 +241,16 @@ let simulator program number_steps =
 	}
 	return res;
 }";
+  Printf.fprintf oc "uint64_t quoicoumux(uint64_t a, uint64_t b, uint64_t c) {
+    if (a) return b;
+	  return c;
+  }";
+
+  Printf.fprintf oc "void clear(){
+	printf(\"\\033[H\\033[J\");
+}";
+
+
   Printf.fprintf oc "int expo(int n, int x){\n\tint res = x;\n\tfor (int i = 1; i < n; i ++){\n\t\tres = res * x;\n}\n\treturn res;\n\t}\n";
   Printf.fprintf oc "int main(void){\n";
  let vars = Hashtbl.create 17 in 

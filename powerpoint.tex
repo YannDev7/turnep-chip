@@ -187,13 +187,32 @@
    de registres, d'instructions etc)
 \end{frame}
 
-\begin{frame}{Exemple: Quicksort}
-    \begin{figure}
-        \centering
-            \includegraphics[width=0.75\textwidth]{Fib.png}
-            \caption{Calcule le nombre de Fibonacci}
-            \label{fig:question}
-        \end{figure}
+\begin{frame}{Exemple: Fibonacci}
+
+    \begin{minipage}[t]{0.48\linewidth}
+        MOV  rdx \$15 \\
+        MOV  rbx \$0 \\
+        MOV  rcx \$1 \\
+
+        MOV  r2x \$1 \\
+        fibo: \\
+        MOV   r1x rcx \\
+        ADD   rcx rbx \\
+        MOV   rbx r1x \\
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.48\linewidth}
+        MOV   rax rcx \\
+        SUB   rdx r2x \\
+        NONZERO rdx \\
+        JMP   'end \\
+        JMP   'fibo \\
+        
+        end: \\
+            MOV rbx \$42 \\
+        
+        .data \\
+        \end{minipage}
+
 \end{frame}
 
 

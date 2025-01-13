@@ -5,7 +5,7 @@ from registers import *
 from alu import *
 from selector import *
 from const import *
-from suicide import *
+from jumplapin import *
 """
 Conventions:
 a[0] is the MOST significant bit
@@ -21,7 +21,7 @@ def main():
 
     selector = Selector()
 
-    suicidehub = SuicideHub(
+    suicidehub = JumpLapin(
         Defer(1, lambda: nuage.estcequejaienviedemesuiccider),
         Defer(1, lambda: nuage.suicideimmediat),
         Defer(1, lambda: nuage.nz),
