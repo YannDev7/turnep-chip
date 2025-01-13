@@ -19,7 +19,6 @@ def main():
     #giga_mux(Input(1), [add(Constant("01"),Constant("01")), sub(Constant("01"),Constant("01"))]).set_as_output("ouiii")
     alu = ALU()
 
-    selector = Selector()
 
     suicidehub = JumpLapin(
         Defer(1, lambda: nuage.estcequejaienviedemesuiccider),

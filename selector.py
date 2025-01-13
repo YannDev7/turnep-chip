@@ -20,20 +20,3 @@ class NuageLine:
         self.nz = self.instr_id[6]
         self.nz.set_as_output("nz")
 
-class Selector:
-    def __init__(self):
-        pass
-
-    """
-        Note: Slice is end excluded
-
-        Temporarly:
-
-        instructions supported:
-            ADD (0)
-            SUB (1)
-
-        (instr id) (raddr1) (raddr2)
-    """
-    def select(self, linebus: Variable):
-        return NuageLine(linebus)
