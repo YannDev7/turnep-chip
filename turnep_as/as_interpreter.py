@@ -216,12 +216,18 @@ def main():
     if "-file" in sys.argv:
         i = sys.argv.index("-file")
         f = sys.argv[i+1]
-        with open(f) as file:
+        with open(f, "r") as file:
             for line in file:
                 line = line.replace("\n", "")
                 line = line.split("#")[0]
-                if line and ":" not in line and "%" not in line:
+                empty = set(line) == {" "}
+                if not empty and line and ":" not in line and "%" not in line:
                     lines.append(line)
+                    print(repr(line))
+                    #input()
+                elif line and not empty:
+                    print(repr(line))
+                    #input()
 
     cycle_count = 0
 
@@ -237,6 +243,8 @@ def main():
         instr_fun[instr](code)
         pc = u32add(pc, 1)
 
+        print("fun name:", instr_fun[instr].__name__)
+
         for (name, id) in reg_name_to_id.items():
             print(f"{name}={regs[id]}", end=" ")
 
@@ -250,7 +258,7 @@ def main():
                 except Exception:
                     print("error")
                 i = input()
-        if (cycle_count +1) % 1000 == 0:
+        if (cycle_count +1) % 10000 == 0:
             input()
         cycle_count += 1
 

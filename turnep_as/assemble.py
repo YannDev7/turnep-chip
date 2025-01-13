@@ -10,6 +10,8 @@ LABEL = 3
 INSTR = 4
 DATA = 5
 
+lines_for_interpreter = None
+
 reg_names = [
     "rax",
     "rbx",
@@ -150,7 +152,7 @@ def parse_file(file, code_buf, data, instr_set):
             t = LABEL
             name = line.split(":")[0]
             #print(name, file=sys.stderr)
-            
+            assert( name not in labels )
             labels[name] = len(code_buf)
         elif line.startswith("%"):
             [alias, reg_name] = line.replace("%", "").replace(" ", "").split("=")
@@ -203,8 +205,9 @@ def parse_file(file, code_buf, data, instr_set):
                                 d_code |= code << 24
                     if d_code:
                         code_buf.append(d_code)
+                        print(line, file=lines_for_interpreter)
                         break
-                assert (d_code is not None)
+                assert (d_code)
 
         line = file.readline()
 
@@ -270,7 +273,9 @@ def main():
 
 
 if __name__ == "__main__":
+    lines_for_interpreter = open("interpret.lines", "w")
     main()
+    lines_for_interpreter.close()
 
 
 

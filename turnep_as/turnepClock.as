@@ -9,6 +9,13 @@
 % jourDeLaSemaine = r7x
 % cycleCount = r9x
 
+% chHeure = rex  # on peut avoir des problemes lors
+# d'un changement d'heure: il peut etre 2h du matin
+# deux fois d'affile.
+# Si on initialise la clock entre 2h et 3h le jour du
+# passage a l'heure d'hiver, on fait comme si
+# le changement d'heure n'a pas encore eu lieu 
+
 % arg1 = rax
 % arg2 = rbx
 
@@ -337,6 +344,216 @@ e9Pici3:
 ADD rg1 $1
 MOV r7c rg1
 ADD @compteur $30
+
+# arg quelle idee de numeroter les etapes
+# hmm pourquoi j'ai appele l'etape d'avant 9prev et pas 8bis
+# bref etape 9prevbis: changement d'heure
+
+# heure hiver a ete: le plus simple
+# on teste si on est bien le dernier dimanche de mars,
+# a 2h precise, et si c'est le cas on ajoute 1 a l'heure (r4c)
+
+# pour savoir ca, on regarde si c'est dimanche.
+# Si oui, on regarde si le jour est entre 25 et 31.
+# Si oui, on regarde s'il est 2h du mat
+# Si oui, on ajoute 1 a r4c
+# ah oui faut regarder si on est en mars aussi
+
+MOV rbc r7c
+ADD rbc $1
+MOV rcc b$1000
+AND rbc rcc    # vaut 8 ssi c'est dimanche (sinon 0)
+MOV rcc $3
+RSHIFT rbc rcc # vaut 1 ssi c'est dimanche (sinon 0)
+MOV rac rbc  # nombre d'heures a ajouter a r4c
+
+MOV rbc r1c
+ADD rbc $7
+MOV rcc b$100000
+AND rbc rcc   # vaut 32 ssi on est entre le 25 et le 31
+MOV rcc $5
+RSHIFT rbc rcc # vaut 1 ssi (cond) (sinon 0)
+AND rac rbc
+
+
+# on test si c'est mars
+MOV rbc r2c
+ADD rbc x$fffd  # enleve 3
+
+NONZERO rbc
+JMP 'e9prevbisif
+JMP 'e9prevbiselse
+
+e9prevbisif:
+MOV rcc $1
+JMP 'e9prevbisfin
+
+e9prevbiselse:
+MOV rcc $0
+JMP 'e9prevbisfin
+
+ADD rac $0
+
+e9prevbisfin:
+AND rac rcc
+
+# horraire
+MOV rbc r5c
+ADD rbc r6c  # de toute facon y'a pas de negatif donc faut
+# que la somme fasse 0
+
+MOV rcc r4c
+ADD rcc x$fffe  # on enleve 2 a l'heure
+MOV rdc x$ff    # masque
+AND rcc rdc     # on remet en positif
+ADD rbc rcc
+
+# faut toujours que la somme fasse 0
+NONZERO rbc
+JMP 'bloupif
+JMP 'bloupelse
+
+bloupif:
+MOV rbc $1
+JMP 'bloupfin
+
+bloupelse:
+MOV rbc $0
+JMP 'bloupfin
+
+bloupfin:
+AND rac rbc
+
+ADD r4c rac
+
+
+
+
+
+
+
+
+
+
+# heure ete a hiver: plus complique mais ca va
+# on teste si on est bien le dernier dimanche d'octobre,
+# a 2h precise, et si c'est le cas on enleve 1 a l'heure (r4c)
+# mais du coup faut aussi regarder si on l'a deja fait
+
+# pour savoir ca, on regarde si c'est dimanche.
+# Si oui, on regarde si le jour est entre 25 et 31.
+# Si oui, on regarde s'il est 2h du mat
+# Si oui, on regarde @chHeure
+# Si c'est 1, on le met a 0 et on fait rien
+# Si c'est 0, on le met a 1 et on enleve 1 a r4c
+# ah oui faut regarder si on est en octobre aussi
+
+# y'a probablement moyen d'economiser une dizaine de cycles
+# en combinant ce code avec celui d'au dessus
+
+MOV rbc r7c
+ADD rbc $1
+MOV rcc b$1000
+AND rbc rcc    # vaut 8 ssi c'est dimanche (sinon 0)
+MOV rcc $3
+RSHIFT rbc rcc # vaut 1 ssi c'est dimanche (sinon 0)
+MOV rac rbc  # nombre d'heures a enlever a r4c
+
+MOV rbc r1c
+ADD rbc $7
+MOV rcc b$100000
+AND rbc rcc   # vaut 32 ssi on est entre le 25 et le 31
+MOV rcc $5
+RSHIFT rbc rcc # vaut 1 ssi (cond) (sinon 0)
+AND rac rbc
+
+
+# on test si c'est octobre
+MOV rbc r2c
+ADD rbc x$fff5  # enleve 11
+
+NONZERO rbc
+JMP 'e9prevbisif2
+JMP 'e9prevbiselse2
+
+e9prevbisif2:
+MOV rcc $1
+JMP 'e9prevbisfin2
+
+e9prevbiselse2:
+MOV rcc $0
+JMP 'e9prevbisfin2
+
+e9prevbisfin2:
+AND rac rcc
+
+# horraire
+MOV rbc r5c
+ADD rbc r6c  # de toute facon y'a pas de negatif donc faut
+# que la somme fasse 0
+
+MOV rcc r4c
+ADD rcc x$fffd  # on enleve 3 a l'heure
+MOV rdc x$ff    # masque
+AND rcc rdc     # on remet en positif
+ADD rbc rcc
+
+# faut toujours que la somme fasse 0
+NONZERO rbc
+JMP 'bloupif2
+JMP 'bloupelse2
+
+bloupif2:
+MOV rbc $1
+JMP 'bloupfin2
+
+bloupelse2:
+MOV rbc $0
+JMP 'bloupfin2
+
+bloupfin2:
+AND rac rbc
+
+NONZERO rac
+JMP 'surQueNon
+JMP 'peutEtreOui
+
+surQueNon:
+ADD rac $0
+ADD rac $0
+ADD rac $0
+ADD rac $0
+ADD rac $0
+ADD rac $0  # pading
+
+
+JMP 'finEtape9prevbis
+
+peutEtreOui:
+
+
+
+NONZERO @chHeure
+JMP 'ouiChangerHeure
+JMP 'nonDejaFait
+
+ouiChangerHeure:
+MOV @chHeure $1
+ADD rac $0 # padding
+JMP 'finDeChangerHeure
+
+nonDejaFait:
+MOV @chHeure $0
+MOV rac $0
+JMP 'finDeChangerHeure
+
+finDeChangerHeure:
+SUB r4c rac
+JMP 'finEtape9prevbis
+
+finEtape9prevbis:
+
+ADD @compteur $77
 
 # 9: maintenant faut attendre jusqu'a la fin
 # on va faire en sorte que le nombre de cycles depuis le debut de la seconde soit un multiple de 4
@@ -675,14 +892,14 @@ fin:
 
 
 .data
-13 # jour
-1 # mois
+30 # jour
+11 # mois
 2025 # annee
-23 # heure
+2 # heure
 59 # minutes
-57 # secondes
+59 # secondes
 
-1000 # nombre de tours par seconde
+10000 # nombre de tours par seconde
 
 
 

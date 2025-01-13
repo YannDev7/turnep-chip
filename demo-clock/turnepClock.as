@@ -6,7 +6,15 @@
 % heure = r4x
 % minutes = r5x
 % secondes = r6x
+% jourDeLaSemaine = r7x
 % cycleCount = r9x
+
+% chHeure = rex  # on peut avoir des problemes lors
+# d'un changement d'heure: il peut etre 2h du matin
+# deux fois d'affile.
+# Si on initialise la clock entre 2h et 3h le jour du
+# passage a l'heure d'hiver, on fait comme si
+# le changement d'heure n'a pas encore eu lieu 
 
 % arg1 = rax
 % arg2 = rbx
@@ -249,6 +257,303 @@ MOV r3c @annee
 ADD r3c rdc
 
 
+# nouveau 9 avant l'ancien 9: jour de la semaine
+
+ADD @compteur $13
+
+MOV rac r2c
+MOV r2y r2c
+MOV r3y r3c
+
+ADD rac $1
+
+MOV rbc x$fffc
+AND rac rbc  # rac <> 0 ssi r2c > 2
+
+NONZERO rac
+JMP 'e9previf
+JMP 'e9prevelse
+
+e9previf:
+ADD r2y $13
+ADD r3y x$ffff
+JMP 'e9prevfin
+
+e9prevelse:
+ADD r2y $1
+ADD r3y $0
+JMP 'e9prevfin
+
+e9prevfin:
+
+
+% j = r4y
+% k = r5y
+% mp = r2y
+
+% h = r6y
+
+# terme 1
+MOV @h r1c
+
+# calcul de j et k
+MOV rg1 r3y
+MOV rrt 'finDivision100->e9Pici1
+JMP 'division100
+e9Pici1:
+MOV @k rg3
+MOV @j rg2
+
+# terme 2
+MOV rg1 @mp
+MUL rg1 @treize
+
+MOV rrt 'finDivision5->e9Pici2
+JMP 'division5
+e9Pici2:
+ADD @h rg1
+
+# terme 3
+ADD @h @k
+
+# terme 4
+MOV rac $2
+RSHIFT @k rac
+ADD @h @k
+
+# terme 6
+MOV rac @j
+ADD rac rac
+ADD rac rac
+ADD rac @j
+ADD @h rac
+
+# terme 5
+MOV rac $2
+RSHIFT @j rac
+ADD @h @j
+
+ADD @h $5 # pour date iso
+
+# mod 7
+MOV rg1 @h
+MOV rrt 'finDivision7->e9Pici3
+JMP 'division7
+e9Pici3:
+
+ADD rg1 $1
+MOV r7c rg1
+ADD @compteur $30
+
+# arg quelle idee de numeroter les etapes
+# hmm pourquoi j'ai appele l'etape d'avant 9prev et pas 8bis
+# bref etape 9prevbis: changement d'heure
+
+# heure hiver a ete: le plus simple
+# on teste si on est bien le dernier dimanche de mars,
+# a 2h precise, et si c'est le cas on ajoute 1 a l'heure (r4c)
+
+# pour savoir ca, on regarde si c'est dimanche.
+# Si oui, on regarde si le jour est entre 25 et 31.
+# Si oui, on regarde s'il est 2h du mat
+# Si oui, on ajoute 1 a r4c
+# ah oui faut regarder si on est en mars aussi
+
+MOV rbc r7c
+ADD rbc $1
+MOV rcc b$1000
+AND rbc rcc    # vaut 8 ssi c'est dimanche (sinon 0)
+MOV rcc $3
+RSHIFT rbc rcc # vaut 1 ssi c'est dimanche (sinon 0)
+MOV rac rbc  # nombre d'heures a ajouter a r4c
+
+MOV rbc r1c
+ADD rbc $7
+MOV rcc b$100000
+AND rbc rcc   # vaut 32 ssi on est entre le 25 et le 31
+MOV rcc $5
+RSHIFT rbc rcc # vaut 1 ssi (cond) (sinon 0)
+AND rac rbc
+
+
+# on test si c'est mars
+MOV rbc r2c
+ADD rbc x$fffd  # enleve 3
+
+NONZERO rbc
+JMP 'e9prevbisif
+JMP 'e9prevbiselse
+
+e9prevbisif:
+MOV rcc $1
+JMP 'e9prevbisfin
+
+e9prevbiselse:
+MOV rcc $0
+JMP 'e9prevbisfin
+
+ADD rac $0
+
+e9prevbisfin:
+AND rac rcc
+
+# horraire
+MOV rbc r5c
+ADD rbc r6c  # de toute facon y'a pas de negatif donc faut
+# que la somme fasse 0
+
+MOV rcc r4c
+ADD rcc x$fffe  # on enleve 2 a l'heure
+MOV rdc x$ff    # masque
+AND rcc rdc     # on remet en positif
+ADD rbc rcc
+
+# faut toujours que la somme fasse 0
+NONZERO rbc
+JMP 'bloupif
+JMP 'bloupelse
+
+bloupif:
+MOV rbc $1
+JMP 'bloupfin
+
+bloupelse:
+MOV rbc $0
+JMP 'bloupfin
+
+bloupfin:
+AND rac rbc
+
+ADD r4c rac
+
+
+
+
+
+
+
+
+
+
+# heure ete a hiver: plus complique mais ca va
+# on teste si on est bien le dernier dimanche d'octobre,
+# a 2h precise, et si c'est le cas on enleve 1 a l'heure (r4c)
+# mais du coup faut aussi regarder si on l'a deja fait
+
+# pour savoir ca, on regarde si c'est dimanche.
+# Si oui, on regarde si le jour est entre 25 et 31.
+# Si oui, on regarde s'il est 2h du mat
+# Si oui, on regarde @chHeure
+# Si c'est 1, on le met a 0 et on fait rien
+# Si c'est 0, on le met a 1 et on enleve 1 a r4c
+# ah oui faut regarder si on est en octobre aussi
+
+# y'a probablement moyen d'economiser une dizaine de cycles
+# en combinant ce code avec celui d'au dessus
+
+MOV rbc r7c
+ADD rbc $1
+MOV rcc b$1000
+AND rbc rcc    # vaut 8 ssi c'est dimanche (sinon 0)
+MOV rcc $3
+RSHIFT rbc rcc # vaut 1 ssi c'est dimanche (sinon 0)
+MOV rac rbc  # nombre d'heures a enlever a r4c
+
+MOV rbc r1c
+ADD rbc $7
+MOV rcc b$100000
+AND rbc rcc   # vaut 32 ssi on est entre le 25 et le 31
+MOV rcc $5
+RSHIFT rbc rcc # vaut 1 ssi (cond) (sinon 0)
+AND rac rbc
+
+
+# on test si c'est octobre
+MOV rbc r2c
+ADD rbc x$fff5  # enleve 11
+
+NONZERO rbc
+JMP 'e9prevbisif2
+JMP 'e9prevbiselse2
+
+e9prevbisif2:
+MOV rcc $1
+JMP 'e9prevbisfin2
+
+e9prevbiselse2:
+MOV rcc $0
+JMP 'e9prevbisfin2
+
+e9prevbisfin2:
+AND rac rcc
+
+# horraire
+MOV rbc r5c
+ADD rbc r6c  # de toute facon y'a pas de negatif donc faut
+# que la somme fasse 0
+
+MOV rcc r4c
+ADD rcc x$fffd  # on enleve 3 a l'heure
+MOV rdc x$ff    # masque
+AND rcc rdc     # on remet en positif
+ADD rbc rcc
+
+# faut toujours que la somme fasse 0
+NONZERO rbc
+JMP 'bloupif2
+JMP 'bloupelse2
+
+bloupif2:
+MOV rbc $1
+JMP 'bloupfin2
+
+bloupelse2:
+MOV rbc $0
+JMP 'bloupfin2
+
+bloupfin2:
+AND rac rbc
+
+NONZERO rac
+JMP 'surQueNon
+JMP 'peutEtreOui
+
+surQueNon:
+ADD rac $0
+ADD rac $0
+ADD rac $0
+ADD rac $0
+ADD rac $0
+ADD rac $0  # pading
+
+
+JMP 'finEtape9prevbis
+
+peutEtreOui:
+
+
+
+NONZERO @chHeure
+JMP 'ouiChangerHeure
+JMP 'nonDejaFait
+
+ouiChangerHeure:
+MOV @chHeure $1
+ADD rac $0 # padding
+JMP 'finDeChangerHeure
+
+nonDejaFait:
+MOV @chHeure $0
+MOV rac $0
+JMP 'finDeChangerHeure
+
+finDeChangerHeure:
+SUB r4c rac
+JMP 'finEtape9prevbis
+
+finEtape9prevbis:
+
+ADD @compteur $77
 
 # 9: maintenant faut attendre jusqu'a la fin
 # on va faire en sorte que le nombre de cycles depuis le debut de la seconde soit un multiple de 4
@@ -328,6 +633,8 @@ MOV r3x r3c
 MOV r4x r4c
 MOV r5x r5c
 MOV r6x r6c
+MOV r7x r7c
+
 
 JMP 'cycleSeconde
 
@@ -457,6 +764,123 @@ ouiCestBissextileMaisFautAjouterDesTrucs:
 ADD @compteur $3
 JMP 'ouiCestBissextile
 
+
+### DIV BY 100
+
+% a = rg1
+% c = rcc
+% d = rdc
+
+
+division100:
+ADD @compteur $27
+MOV rac $2
+MOV rbc $123
+MOV rec $17
+MOV rfc $20
+MOV rbp $8
+
+MOV @c @a
+RSHIFT @a rac
+
+MOV rsp @a
+MUL rsp rbc
+
+MUL @a rfc
+LSHIFT @a rbp
+ADD @a rsp
+
+RSHIFT @a rec
+
+MOV @d @a
+MOV rg2 @d
+
+LSHIFT @d rac
+MOV @a @d
+RSHIFT @d rac
+
+ADD @a @d
+
+MOV @d @a
+LSHIFT @d rac
+
+ADD @a @d
+
+LSHIFT @a rac
+
+SUB @c @a
+
+MOV rg3 @c
+finDivision100:
+JMP rrt
+
+### DIV BY 5
+
+division5:
+ADD @compteur $12
+MOV rac $205
+MOV rbc $204
+MOV rec $18
+MOV rdc $8
+
+MOV @c @a
+
+MUL @c rbc
+LSHIFT @c rdc
+
+MUL @a rac
+ADD @a @c
+
+RSHIFT @a rec
+
+finDivision5:
+JMP rrt
+
+### DIV BY 7
+
+
+division7:
+ADD @compteur $28
+MOV rac $1
+MOV rbc $147
+MOV rec $16
+MOV rfc $36
+MOV rbp $8
+
+MOV @d @a
+
+MOV rsp @d
+MUL rsp rbc
+
+MUL @d rfc
+LSHIFT @d rbp
+ADD @d rsp
+
+MOV @c @d
+RSHIFT @c rec
+MOV @d @a
+SUB @d @c
+RSHIFT @d rac
+
+ADD @d @c
+MOV @c @d
+
+MOV rac $2
+RSHIFT @c rac
+MOV @d @c
+MOV rac $3
+LSHIFT @d rac
+
+SUB @d @c
+SUB @a @d
+MOV @c @a
+
+finDivision7:
+JMP rrt
+
+
+
+
 fin:
 
 
@@ -468,12 +892,12 @@ fin:
 
 
 .data
-31 # jour
-12 # mois
-2024004 # annee
-23 # heure
+29 # jour
+3 # mois
+2025 # annee
+1 # heure
 59 # minutes
-57 # secondes
+59 # secondes
 
 1000 # nombre de tours par seconde
 

@@ -2,7 +2,7 @@ test.net: main.py alu.py utils.py selector.py registers.py
 	carotte/carotte.py -o $@ main.py
 
 testass:
-	python3 turnep_as/assemble.py turnep_as/divby100.as
+	python3 turnep_as/assemble.py turnep_as/turnepClock.as
 	./netlist_simulator.byte -n 4 test.net
 
 testw: test.net
@@ -34,6 +34,7 @@ build-clock: simul test.net
 	
 run-clock:
 	cd demo-clock;\
+	python3 ../turnep_as/assemble.py turnepClock.as; \
 	gcc -Ofast -march=native -mtune=native -flto -ffast-math -funroll-loops simulator.c -o main;\
 	time ./main
 
