@@ -131,6 +131,9 @@ class ALU:
     def mul2(self, a, b, nuage): #profondeur O(logn)
         return self.several_adder([klshift(And(a, Mux(b[31-k], Constant("1"*32), Constant("0"*32))), k) for k in range(32)])        
 
+    def mul2(self, a, b, nuage): #profondeur O(logn)
+        return self.several_adder([klshift(And(a, Mux(b[31-k], Constant("1"*32), Constant("0"*32))), k) for k in range(8)])     
+
     def alu_hub(self, a, b, nuage):
 
         ram = self.load_store_ram(a, b, nuage)
