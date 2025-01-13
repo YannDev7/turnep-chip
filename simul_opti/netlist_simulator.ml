@@ -134,7 +134,7 @@ let find_vars vars var =
     Hashtbl.find vars var 
 else (
   counter := !counter + 1;
-  Printf.printf "%s = %d\n" var (!counter);
+  Printf.printf "%s = (uint32_t)%d\n" var (!counter);
   Hashtbl.add vars var (!counter);
   counter := !counter + 1;
   Hashtbl.find vars var)
@@ -145,79 +145,79 @@ let deal_with_exp exp  types vars   =
 
   match eq with 
   |Earg(elem) -> (match elem with 
-                    |Avar(id) -> (Printf.fprintf oc "uint64_t v_%d = v_%d;\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id) (find_vars vars name) (find_vars vars id))
+                    |Avar(id) -> (Printf.fprintf oc "uint32_t v_%d = v_%d;\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id) (find_vars vars name) (find_vars vars id))
                     |Aconst(value)-> (match value with 
-                                      |VBit(s) -> Printf.fprintf oc "uint64_t v_%d = %d;\n int v_%d_taille = 1;\n"(find_vars vars name) (int_of_bool s) (find_vars vars name)
-                                      |VBitArray(n)-> let acc = Array.fold_left (fun    i elem -> i*2 + (int_of_bool elem)) 0 n in Printf.fprintf oc "uint64_t v_%d = %d;\n int v_%d_taille = %d;\n" (find_vars vars name) acc (find_vars vars name) (Array.length n)) )
+                                      |VBit(s) -> Printf.fprintf oc "uint32_t v_%d = (uint32_t)%d;\n uint32_t v_%d_taille = (uint32_t)(1);\n"(find_vars vars name) (int_of_bool s) (find_vars vars name)
+                                      |VBitArray(n)-> let acc = Array.fold_left (fun    i elem -> i*2 + (int_of_bool elem)) 0 n in Printf.fprintf oc "uint32_t v_%d = (uint32_t)%d;\n uint32_t v_%d_taille = (uint32_t)%d;\n" (find_vars vars name) acc (find_vars vars name) (Array.length n)) )
   |Enot(elem) -> (match  elem with
                 | Aconst(value) -> (match value with 
-                                      |VBit(s) -> Printf.fprintf oc "uint64_t v_%d = ~%d & 1;\nint v_%d_taille = 1;\n" (find_vars vars name) (int_of_bool s) (find_vars vars name)
-                                      |VBitArray(n)-> let acc = Array.fold_left (fun   i elem -> i*2 + (int_of_bool elem)) 0 n in Printf.fprintf oc "uint64_t v_%d = ~%d & (((int64_t)1<<%d)-1);\nv_%d_taille = %d;\n " (find_vars vars name) acc (Array.length n) (find_vars vars name) (Array.length n))
-                | Avar(id) ->  Printf.fprintf oc "uint64_t v_%d = ~v_%d & (((int64_t)1<<v_%d_taille)-1);\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id) (find_vars vars id) (find_vars vars name) (find_vars vars id) )
+                                      |VBit(s) -> Printf.fprintf oc "uint32_t v_%d = ~(uint32_t)%d & (uint32_t)(1);\nint v_%d_taille = (uint32_t)(1);\n" (find_vars vars name) (int_of_bool s) (find_vars vars name)
+                                      |VBitArray(n)-> let acc = Array.fold_left (fun   i elem -> i*2 + (int_of_bool elem)) 0 n in Printf.fprintf oc "uint32_t v_%d = ~(uint32_t)%d & (((int32_t)1<<(uint32_t)%d)-(uint32_t)(1));\nv_%d_taille = (uint32_t)%d;\n " (find_vars vars name) acc (Array.length n) (find_vars vars name) (Array.length n))
+                | Avar(id) ->  Printf.fprintf oc "uint32_t v_%d = ~v_%d & (((int32_t)1<<v_%d_taille)-(uint32_t)(1));\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id) (find_vars vars id) (find_vars vars name) (find_vars vars id) )
   |Ebinop(ope, arg1, arg2) -> (match arg1, arg2 with 
                                 | Avar(id1), Avar(id2) -> (match ope with 
-                                                          | Nand -> Printf.fprintf oc "\t\tuint64_t v_%d = ~(v_%d&v_%d);int v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (find_vars vars id2) (find_vars vars name) (find_vars vars id1) 
-                                                          | _ -> Printf.fprintf oc "\t\tuint64_t v_%d = v_%d%sv_%d;\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (string_of_ope ope) (find_vars vars id2) (find_vars vars name) (find_vars vars id1) )
+                                                          | Nand -> Printf.fprintf oc "\t\tuint32_t v_%d = ~(v_%d&v_%d);uint32_t v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (find_vars vars id2) (find_vars vars name) (find_vars vars id1) 
+                                                          | _ -> Printf.fprintf oc "\t\tuint32_t v_%d = v_%d%sv_%d;\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (string_of_ope ope) (find_vars vars id2) (find_vars vars name) (find_vars vars id1) )
                                 | Avar(id1), Aconst(val2) ->(match ope with 
-                                                          | Nand -> Printf.fprintf oc "\t\tuint64_t v_%d = ~(v_%d&%d);\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (int_of_value val2) (find_vars vars name) (find_vars vars id1) 
-                                                          | _ -> Printf.fprintf oc "\t\tuint64_t v_%d = v_%d%s%d;\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (string_of_ope ope) (int_of_value val2) (find_vars vars name) (find_vars vars id1) )
+                                                          | Nand -> Printf.fprintf oc "\t\tuint32_t v_%d = ~(v_%d&(uint32_t)%d);\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (int_of_value val2) (find_vars vars name) (find_vars vars id1) 
+                                                          | _ -> Printf.fprintf oc "\t\tuint32_t v_%d = v_%d%s(uint32_t)%d;\nint v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (string_of_ope ope) (int_of_value val2) (find_vars vars name) (find_vars vars id1) )
                                 | Aconst(val1), Avar(id1)-> (match ope with 
-                                                          | Nand -> Printf.fprintf oc "\t\tuint64_t v_%d = ~(v_%d&%d);\nint v_%d_taille = v_%d_taille\n" (find_vars vars name) (find_vars vars id1) (int_of_value val1) (find_vars vars name) (find_vars vars id1) 
-                                                          | _ -> Printf.fprintf oc "\t\tuint64_t v_%d = v_%d%s%d;\nint v_%d_taille = v_%d_taille\n" (find_vars vars name) (find_vars vars id1) (string_of_ope ope) (int_of_value val1) (find_vars vars name) (find_vars vars id1) )
+                                                          | Nand -> Printf.fprintf oc "\t\tuint32_t v_%d = ~(v_%d&(uint32_t)%d);\nint v_%d_taille = v_%d_taille\n" (find_vars vars name) (find_vars vars id1) (int_of_value val1) (find_vars vars name) (find_vars vars id1) 
+                                                          | _ -> Printf.fprintf oc "\t\tuint32_t v_%d = v_%d%s(uint32_t)%d;\nint v_%d_taille = v_%d_taille\n" (find_vars vars name) (find_vars vars id1) (string_of_ope ope) (int_of_value val1) (find_vars vars name) (find_vars vars id1) )
                                 |Aconst(val1), Aconst(val2) -> (let len = (match val1 with |VBit(s) -> 1 |VBitArray(n)-> Array.length n) in match ope with 
-                                                          | Nand -> Printf.fprintf oc "\t\tuint64_t v_%d = ~(%d&%d);\n" (find_vars vars name) (int_of_value val1) (int_of_value val2)
-                                                          | _ -> Printf.fprintf oc "\t\tuint64_t v_%d = %d%s%d;\nint v_%d_taille = %d\n" (find_vars vars name) (int_of_value val1) (string_of_ope ope) (int_of_value val2) (find_vars vars name) len)
+                                                          | Nand -> Printf.fprintf oc "\t\tuint32_t v_%d = ~((uint32_t)%d&(uint32_t)%d);\n" (find_vars vars name) (int_of_value val1) (int_of_value val2)
+                                                          | _ -> Printf.fprintf oc "\t\tuint32_t v_%d = (uint32_t)%d%s(uint32_t)%d;\nint v_%d_taille = (uint32_t)%d\n" (find_vars vars name) (int_of_value val1) (string_of_ope ope) (int_of_value val2) (find_vars vars name) len)
                                   )
   | Emux (choice, arg1, arg2) -> (
                                   (*match choice with 
-                                  |Avar(id) -> (Printf.fprintf oc "uint64_t v_%d; uint64_t v_%d_taille;\nif (v_%d){\n\t\t\t\t  v_%d = " (find_vars vars name) (find_vars vars name) (find_vars vars id) (find_vars vars name); 
+                                  |Avar(id) -> (Printf.fprintf oc "uint32_t v_%d; uint32_t v_%d_taille;\nif (v_%d){\n\t\t\t\t  v_%d = " (find_vars vars name) (find_vars vars name) (find_vars vars id) (find_vars vars name); 
                                                 (match arg1 with
                                                   |Avar(id1) -> Printf.fprintf oc "v_%d;\n\t\t\t  v_%d_taille = v_%d_taille;\n}\n" (find_vars vars id1) (find_vars vars name) (find_vars vars id1) 
-                                                  |Aconst(value) -> Printf.fprintf oc "%d;\n\t\t\ v_%d_taille = %d;\n}\n" (int_of_value value) (find_vars vars name) (len_value value) );
+                                                  |Aconst(value) -> Printf.fprintf oc "(uint32_t)%d;\n\t\t\ v_%d_taille = (uint32_t)%d;\n}\n" (int_of_value value) (find_vars vars name) (len_value value) );
                                                 Printf.fprintf oc "\t\t\telse{\n  v_%d = " (find_vars vars name);
                                                 (match arg2 with
                                                   |Avar(id1) -> Printf.fprintf oc "v_%d;\n\t\t\t  v_%d_taille = v_%d_taille;\n}\n" (find_vars vars id1) (find_vars vars name) (find_vars vars id1) 
-                                                  |Aconst(value) ->  Printf.fprintf oc "%d;\n\t\t\ v_%d_taille = %d;\n}\n" (int_of_value value) (find_vars vars name) (len_value value) )
+                                                  |Aconst(value) ->  Printf.fprintf oc "(uint32_t)%d;\n\t\t\ v_%d_taille = (uint32_t)%d;\n}\n" (int_of_value value) (find_vars vars name) (len_value value) )
                                                   )
-                                  | Aconst(value) -> (Printf.fprintf oc "uint64_t v_%d;\n uint64_t v_%d_taille;\nif (%d){\n\t\t\t\t  v_%d = " (find_vars vars name) (find_vars vars name) (int_of_value value) (find_vars vars name); 
+                                  | Aconst(value) -> (Printf.fprintf oc "uint32_t v_%d;\n uint32_t v_%d_taille;\nif ((uint32_t)%d){\n\t\t\t\t  v_%d = " (find_vars vars name) (find_vars vars name) (int_of_value value) (find_vars vars name); 
                                     (match arg1 with
                                       |Avar(id1) -> Printf.fprintf oc "v_%d;\n\t\t\t  v_%d_taille = v_%d_taille;\n}\n" (find_vars vars id1) (find_vars vars name) (find_vars vars id1) 
-                                      |Aconst(value) -> Printf.fprintf oc "%d;\n\t\t\t  v_%d_taille = %d;\n}\n" (int_of_value value) (find_vars vars name) (len_value value));
+                                      |Aconst(value) -> Printf.fprintf oc "(uint32_t)%d;\n\t\t\t  v_%d_taille = (uint32_t)%d;\n}\n" (int_of_value value) (find_vars vars name) (len_value value));
                                     Printf.fprintf oc "\t\t\telse{\ v_%d =" (find_vars vars name);
                                     (match arg2 with
                                       |Avar(id1) -> Printf.fprintf oc "v_%d;\n\t\t\t  v_%d_taille = v_%d_taille;\n}\n" (find_vars vars id1) (find_vars vars name) (find_vars vars id1) 
-                                      |Aconst(value) -> Printf.fprintf oc "%d;\n\t\t\t  v_%d_taille = %d;\n}\n" (int_of_value value) (find_vars vars name) (len_value value))
+                                      |Aconst(value) -> Printf.fprintf oc "(uint32_t)%d;\n\t\t\t  v_%d_taille = (uint32_t)%d;\n}\n" (int_of_value value) (find_vars vars name) (len_value value))
                                       )*)
 
     let get_val truc = match truc with
       | Avar (id) -> ("v_"^(string_of_int(find_vars vars id))), ("v_"^(string_of_int (find_vars vars id))^"_taille" )
-      | Aconst (value) -> (string_of_int (int_of_value value)), (string_of_int(len_value value))
+      | Aconst (value) -> "(uint32_t)" ^ (string_of_int (int_of_value value)), (string_of_int(len_value value))
     in 
     let vc, szc = get_val choice in
     let v1, sz1 = get_val arg1 in 
     let v2, sz2 = get_val arg2 in 
-    Printf.fprintf oc "uint64_t v_%d = quoicoumux(%s, %s, %s);\n" (find_vars vars name) vc v1 v2;
-    Printf.fprintf oc "uint64_t v_%d_taille = %s;\n" (find_vars vars name) sz1;
+    Printf.fprintf oc "uint32_t v_%d = quoicoumux(%s, %s, %s);\n" (find_vars vars name) vc v1 v2;
+    Printf.fprintf oc "uint32_t v_%d_taille = %s;\n" (find_vars vars name) sz1;
 
   )
   |Econcat(arg1, arg2) -> (match arg1, arg2 with
-                            |Avar(id1), Avar(id2) -> Printf.fprintf oc "\t\tuint64_t v_%d = (v_%d << v_%d_taille) + v_%d;\n\t\tuint64_t v_%d_taille = v_%d_taille + v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (find_vars vars id2) (find_vars vars id2) (find_vars vars name) (find_vars vars id1) (find_vars vars id2) 
-                            | Avar(id1), Aconst(val1) -> Printf.fprintf oc "\t\tuint64_t v_%d = (v_%d << %d) + %d;\n\t\tuint64_t v_%d_taille = v_%d_taille + %d;\n" (find_vars vars name) (find_vars vars id1) (len_value val1) (int_of_value val1) (find_vars vars name) (find_vars vars id1) (len_value val1)
-                            |Aconst(val1), Avar(id1) -> Printf.fprintf oc "\t\tuint64_t v_%d = (%d << v_%d_taille) + v_%d;\n\t\tuint64_t v_%d_taille = %d + v_%d_taille;\n" (find_vars vars name) (int_of_value val1) (find_vars vars id1)  (find_vars vars id1) (find_vars vars name) (len_value val1) (find_vars vars id1) 
-                            | Aconst(val1), Aconst(val2 ) -> Printf.fprintf oc "\t\tuint64_t v_%d = (%d << %d) + %d; \n\t\tuint64_t v_%d_taille = %d + %d\n;" (find_vars vars name) (int_of_value val1) (len_value val2) (int_of_value val2) (find_vars vars name) (len_value val1) (len_value val2))
+                            |Avar(id1), Avar(id2) -> Printf.fprintf oc "\t\tuint32_t v_%d = (v_%d << v_%d_taille) + v_%d;\n\t\tuint32_t v_%d_taille = v_%d_taille + v_%d_taille;\n" (find_vars vars name) (find_vars vars id1) (find_vars vars id2) (find_vars vars id2) (find_vars vars name) (find_vars vars id1) (find_vars vars id2) 
+                            | Avar(id1), Aconst(val1) -> Printf.fprintf oc "\t\tuint32_t v_%d = (v_%d << (uint32_t)%d) + (uint32_t)%d;\n\t\tuint32_t v_%d_taille = v_%d_taille + (uint32_t)%d;\n" (find_vars vars name) (find_vars vars id1) (len_value val1) (int_of_value val1) (find_vars vars name) (find_vars vars id1) (len_value val1)
+                            |Aconst(val1), Avar(id1) -> Printf.fprintf oc "\t\tuint32_t v_%d = ((uint32_t)%d << v_%d_taille) + v_%d;\n\t\tuint32_t v_%d_taille = (uint32_t)%d + v_%d_taille;\n" (find_vars vars name) (int_of_value val1) (find_vars vars id1)  (find_vars vars id1) (find_vars vars name) (len_value val1) (find_vars vars id1) 
+                            | Aconst(val1), Aconst(val2 ) -> Printf.fprintf oc "\t\tuint32_t v_%d = ((uint32_t)%d << (uint32_t)%d) + (uint32_t)%d; \n\t\tuint32_t v_%d_taille = (uint32_t)%d + (uint32_t)%d\n;" (find_vars vars name) (int_of_value val1) (len_value val2) (int_of_value val2) (find_vars vars name) (len_value val1) (len_value val2))
   |Eslice(ind1, ind2, arg) -> (match arg with 
-                            |Avar(id) -> Printf.fprintf oc "\t\tuint64_t v_%d = (v_%d & (expo(v_%d_taille - %d,2) -1 )) >> (int64_t)((v_%d_taille-%d-1));\n\t\tuint64_t v_%d_taille = %d-%d+1;\n" (find_vars vars name) (find_vars vars id) (find_vars vars id) ind1 (find_vars vars id)  (ind2) (find_vars vars name) ind2 ind1
-                            |Aconst(val1) -> Printf.fprintf oc "\t\tuint64_t v_%d = (%d & (expo(%d - %d,2)-1)) >> (int64_t)((%d -%d-1));\n\t\tuint64_t v_%d_taille = %d - %d + 1;\n" (find_vars vars name) (int_of_value val1) (len_value val1) ind1 (len_value val1) (ind2) (find_vars vars name) ind2 ind1 )
+                            |Avar(id) -> Printf.fprintf oc "\t\tuint32_t v_%d = (v_%d & (expo(v_%d_taille - (uint32_t)%d,(uint32_t)(2)) -(uint32_t)(1) )) >> (int32_t)((v_%d_taille-(uint32_t)%d-(uint32_t)(1)));\n\t\tuint32_t v_%d_taille = (uint32_t)%d-(uint32_t)%d+(uint32_t)(1);\n" (find_vars vars name) (find_vars vars id) (find_vars vars id) ind1 (find_vars vars id)  (ind2) (find_vars vars name) ind2 ind1
+                            |Aconst(val1) -> Printf.fprintf oc "\t\tuint32_t v_%d = ((uint32_t)%d & (expo((uint32_t)%d - (uint32_t)%d,(uint32_t)(2))-(uint32_t)(1))) >> (int32_t)(((uint32_t)%d -(uint32_t)%d-(uint32_t)(1)));\n\t\tuint32_t v_%d_taille = (uint32_t)%d - (uint32_t)%d + (uint32_t)(1);\n" (find_vars vars name) (int_of_value val1) (len_value val1) ind1 (len_value val1) (ind2) (find_vars vars name) ind2 ind1 )
   |Eselect(ind, arg) -> (match  arg with
-                        | Avar(id) -> Printf.fprintf oc "\t\tuint64_t v_%d = (v_%d & ((int64_t)1<<(v_%d_taille - %d -1)))>>(int64_t)(v_%d_taille -%d -1);\n\t\tuint64_t v_%d_taille = 1;\n" (find_vars vars name) (find_vars vars id) (find_vars vars id) ind (find_vars vars id) ind (find_vars vars name) 
-                        |Aconst(val1) -> Printf.fprintf oc "\t\tuint64_t v_%d = (%d & ((int64_t)1<<(%d - %d -1)))>>(int64_t)(%d -%d -1);\n\t\tuint64_t v_%d_taille = 1;\n" (find_vars vars name) (int_of_value val1) (len_value val1) ind (len_value val1) ind (find_vars vars name)  )  
-  |Ereg(x) -> (Printf.fprintf oc "\t\tuint64_t v_%d = v_%d_reg;\n\t\t uint64_t v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars x) (find_vars vars name) (find_vars vars x))
+                        | Avar(id) -> Printf.fprintf oc "\t\tuint32_t v_%d = (v_%d & ((int32_t)1<<(v_%d_taille - (uint32_t)%d -(uint32_t)(1))))>>(int32_t)(v_%d_taille -(uint32_t)%d -(uint32_t)(1));\n\t\tuint32_t v_%d_taille = (uint32_t)(1);\n" (find_vars vars name) (find_vars vars id) (find_vars vars id) ind (find_vars vars id) ind (find_vars vars name) 
+                        |Aconst(val1) -> Printf.fprintf oc "\t\tuint32_t v_%d = ((uint32_t)%d & ((int32_t)1<<((uint32_t)%d - (uint32_t)%d -(uint32_t)(1))))>>(int32_t)((uint32_t)%d -(uint32_t)%d -(uint32_t)(1));\n\t\tuint32_t v_%d_taille = (uint32_t)(1);\n" (find_vars vars name) (int_of_value val1) (len_value val1) ind (len_value val1) ind (find_vars vars name)  )  
+  |Ereg(x) -> (Printf.fprintf oc "\t\tuint32_t v_%d = v_%d_reg;\n\t\t uint32_t v_%d_taille = v_%d_taille;\n" (find_vars vars name) (find_vars vars x) (find_vars vars name) (find_vars vars x))
   | Eram(_,word_size,arg,_,_,_) -> (match arg with
-                                            | Avar(x) -> Printf.fprintf oc "\t\tuint64_t v_%d = v_%d_ram[v_%d];\nuint64_t v_%d_taille = %d;\n" (find_vars vars name) (find_vars vars name) (find_vars vars x) (find_vars vars name) word_size
-                                            | Aconst(value) -> Printf.fprintf oc "\t\tuint64_t v_%d =  v_%d_ram[%d];\nuint64_t v_%d_taille = %d;\n" (find_vars vars name) (find_vars vars name) (int_of_value value) (find_vars vars name) word_size)
+                                            | Avar(x) -> Printf.fprintf oc "\t\tuint32_t v_%d = v_%d_ram[v_%d];\nuint32_t v_%d_taille = (uint32_t)%d;\n" (find_vars vars name) (find_vars vars name) (find_vars vars x) (find_vars vars name) word_size
+                                            | Aconst(value) -> Printf.fprintf oc "\t\tuint32_t v_%d =  v_%d_ram[(uint32_t)%d];\nuint32_t v_%d_taille = (uint32_t)%d;\n" (find_vars vars name) (find_vars vars name) (int_of_value value) (find_vars vars name) word_size)
   | Erom(_,word_size,arg) -> (match arg with
-                                | Avar(x) -> Printf.fprintf oc "\t\t//Hello \nuint64_t v_%d = v_%d_rom[v_%d];\nuint64_t v_%d_taille = %d;\n" (find_vars vars name) (find_vars vars name) (find_vars vars x) (find_vars vars name) word_size
-                                | Aconst(value) -> Printf.fprintf oc "\t\t//Hello\nuint64_t v_%d = v_%d_rom[%d];\nuint64_t v_%d_taille = %d;\n" (find_vars vars name) (find_vars vars name) (int_of_value value) (find_vars vars name) word_size)
+                                | Avar(x) -> Printf.fprintf oc "\t\t//Hello \nuint32_t v_%d = v_%d_rom[v_%d];\nuint32_t v_%d_taille = (uint32_t)%d;\n" (find_vars vars name) (find_vars vars name) (find_vars vars x) (find_vars vars name) word_size
+                                | Aconst(value) -> Printf.fprintf oc "\t\t//Hello\nuint32_t v_%d = v_%d_rom[(uint32_t)%d];\nuint32_t v_%d_taille = (uint32_t)%d;\n" (find_vars vars name) (find_vars vars name) (int_of_value value) (find_vars vars name) word_size)
 let rec expo x n = 
   if n = 0 then 1 else
   x*(expo x (n-1))
@@ -233,15 +233,15 @@ let simulator program number_steps =
 #pragma GCC optimize(\"fast-math\")\n
 #pragma GCC prefetch\n";
 
-  Printf.fprintf oc "uint64_t binaryToDecimal(uint64_t n){\n\tuint64_t num = n;\n\tuint64_t dec_value = 0;\n\tuint64_t base = 1;\n\tuint64_t temp = num;\n\twhile (temp) {\n\t\tuint64_t last_digit = temp %% 10;\n\t\ttemp = temp / 10;\n\t\tdec_value += last_digit * base;\n\t\tbase = base * 2;\n\t}\n\treturn dec_value;\n}\n";
-  Printf.fprintf oc "uint64_t stringToDecimal(char* c, int n){
-	uint64_t res = 0;
-	for(int i = 0; i < n; i ++){
-		res = 2*res + c[i] -'0';
+  Printf.fprintf oc "uint32_t binaryToDecimal(uint32_t n){\n\tuint32_t num = n;\n\tuint32_t dec_value = (uint32_t)(0);\n\tuint32_t base = (uint32_t)(1);\n\tuint32_t temp = num;\n\twhile (temp) {\n\t\tuint32_t last_digit = temp %% (uint32_t)(10);\n\t\ttemp = temp / (uint32_t)(10);\n\t\tdec_value += last_digit * base;\n\t\tbase = base * (uint32_t)(2);\n\t}\n\treturn dec_value;\n}\n";
+  Printf.fprintf oc "uint32_t stringToDecimal(char* c, uint32_t n){
+	uint32_t res = (uint32_t)(0);
+	for(uint32_t i = 0; i < n; i ++){
+		res = (uint32_t)(2)*res + c[i] -'0';
 	}
 	return res;
 }";
-  Printf.fprintf oc "uint64_t quoicoumux(uint64_t a, uint64_t b, uint64_t c) {
+  Printf.fprintf oc "uint32_t quoicoumux(uint32_t a, uint32_t b, uint32_t c) {
     if (a) return b;
 	  return c;
   }";
@@ -251,8 +251,8 @@ let simulator program number_steps =
 }";
 
 
-  Printf.fprintf oc "int expo(int n, int x){\n\tint res = x;\n\tfor (int i = 1; i < n; i ++){\n\t\tres = res * x;\n}\n\treturn res;\n\t}\n";
-  Printf.fprintf oc "int main(void){\n";
+  Printf.fprintf oc "uint32_t expo(uint32_t n, uint32_t x){\n\tint res = x;\n\tfor (uint32_t i = 1; i < n; i ++){\n\t\tres = res * x;\n}\n\treturn res;\n\t}\n";
+  Printf.fprintf oc "signed main(void){\n";
  let vars = Hashtbl.create 17 in 
   let types = program.p_vars in 
   let prog_order = schedule program in 
@@ -261,25 +261,25 @@ let simulator program number_steps =
                                            |TBit ->1
                                            |TBitArray(len) -> len)
                                               in   
-                                          Printf.fprintf oc "uint64_t v_%d_reg = 0;\nuint64_t v_%d_taille = %d;" (find_vars vars x) (find_vars vars x) leng)
-                          |Erom(add_size,word_size, _) -> (Printf.fprintf oc "\tint v_%d_add_size = %d;\n\tuint64_t* v_%d_rom = (uint64_t*)malloc(expo(v_%d_add_size, 2)*sizeof(uint64_t));\n"(find_vars vars name) add_size  (find_vars vars name)  (find_vars vars name);
-                                                         Printf.fprintf oc "\t FILE* f_%s = fopen(\"%s.db\", \"r\");\n\tchar buffer_%s[%d];\n" name name name word_size ;
-                                                         Printf.fprintf oc "\tfor (int i = 0; i < expo(v_%d_add_size, 2); i++){\n\t\tfscanf(f_%s, \"%%s\\n\", buffer_%s); \n\t\tv_%d_rom[i] = stringToDecimal(buffer_%s, %d);\n\t}\n"  (find_vars vars name) name name  (find_vars vars name) name word_size)
+                                          Printf.fprintf oc "uint32_t v_%d_reg = (uint32_t)(0);\nuint32_t v_%d_taille = (uint32_t)%d;" (find_vars vars x) (find_vars vars x) leng)
+                          |Erom(add_size,word_size, _) -> (Printf.fprintf oc "\tint v_%d_add_size = (uint32_t)%d;\n\tuint32_t* v_%d_rom = (uint32_t*)malloc(expo(v_%d_add_size, (uint32_t)(2))*sizeof(uint32_t));\n"(find_vars vars name) add_size  (find_vars vars name)  (find_vars vars name);
+                                                         Printf.fprintf oc "\t FILE* f_%s = fopen(\"%s.db\", \"r\");\n\tchar buffer_%s[(uint32_t)%d];\n" name name name word_size ;
+                                                         Printf.fprintf oc "\tfor (uint32_t i = 0; i < expo(v_%d_add_size, (uint32_t)(2)); i++){\n\t\tfscanf(f_%s, \"%%s\\n\", buffer_%s); \n\t\tv_%d_rom[i] = stringToDecimal(buffer_%s, (uint32_t)%d);\n\t}\n"  (find_vars vars name) name name  (find_vars vars name) name word_size)
  
                                                          
-                          |Eram(add_size, word_size, _,_,_,_) -> (Printf.fprintf oc "\tint v_%d_add_size = %d;\n\tuint64_t* v_%d_ram = (uint64_t*)malloc(expo(v_%d_add_size, 2)*sizeof(uint64_t));\n" (find_vars vars name) add_size  (find_vars vars name)  (find_vars vars name);
-                          Printf.fprintf oc "\tfor (int i = 0; i < expo(v_%d_add_size, 2); i++){ \n\t\tv_%d_ram[i] = 0;\n\t}\n"  (find_vars vars name) (find_vars vars name))
+                          |Eram(add_size, word_size, _,_,_,_) -> (Printf.fprintf oc "\tint v_%d_add_size = (uint32_t)%d;\n\tuint32_t* v_%d_ram = (uint32_t*)malloc(expo(v_%d_add_size, (uint32_t)(2))*sizeof(uint32_t));\n" (find_vars vars name) add_size  (find_vars vars name)  (find_vars vars name);
+                          Printf.fprintf oc "\tfor (uint32_t i = 0; i < expo(v_%d_add_size, (uint32_t)(2)); i++){ \n\t\tv_%d_ram[i] = (uint32_t)(0);\n\t}\n"  (find_vars vars name) (find_vars vars name))
 
                                                                  
                           |_ -> ()) program.p_eqs;
-  Printf.fprintf oc "\tfor (uint64_t i = 0; i < %d; i = i + 1){\n"  number_steps;
+  Printf.fprintf oc "\tfor (uint32_t i = 0; i < (uint32_t)%d; i = i + (uint32_t)(1)){\n"  number_steps;
   
     List.iter (fun elem ->let length = 
                 match (Env.find  elem types ) with 
                   |TBit -> 1
                   |TBitArray(len) -> len 
                   in 
-                  Printf.fprintf oc "\t\tuint64_t v_%d;\n\t\tprintf(\"Donnder la valeur de %s qui a une longeur %d: \");\n\t\tscanf(\"%%ld\", &v_%d);\n \t\tv_%d = binaryToDecimal(v_%d); \n\t\tuint64_t v_%d_taille = %d;\n"(find_vars vars elem) elem length (find_vars vars elem) (find_vars vars elem) (find_vars vars elem) (find_vars vars elem) (length);
+                  Printf.fprintf oc "\t\tuint32_t v_%d;\n\t\tprintf(\"Donnder la valeur de %s qui a une longeur (uint32_t)%d: \");\n\t\tscanf(\"%%d\", &v_%d);\n \t\tv_%d = binaryToDecimal(v_%d); \n\t\tuint32_t v_%d_taille = (uint32_t)%d;\n"(find_vars vars elem) elem length (find_vars vars elem) (find_vars vars elem) (find_vars vars elem) (find_vars vars elem) (length);
       ) prog_order.p_inputs;
     List.iter (fun exp -> deal_with_exp exp  types vars) prog_order.p_eqs;
 
@@ -287,20 +287,20 @@ let simulator program number_steps =
     List.iter (fun (name, elem) -> match elem with 
     |Eram (addr_size, word_size, _, we, wa, data) -> ((match we with 
                                                       |Avar(x) -> Printf.fprintf oc "if (v_%d){\n" (find_vars vars x) 
-                                                      |Aconst(value) -> Printf.fprintf oc "if (%d){\n" (int_of_value value));
+                                                      |Aconst(value) -> Printf.fprintf oc "if ((uint32_t)%d){\n" (int_of_value value));
                                                       (match wa with 
-                                                      |Avar(x) -> Printf.fprintf oc "uint64_t v_%d_wa = v_%d;\n" (find_vars vars name) (find_vars vars x)
-                                                      |Aconst(value) -> Printf.fprintf oc "uint64_t v_%d_wa = %d;\n" (find_vars vars name) (int_of_value value));
+                                                      |Avar(x) -> Printf.fprintf oc "uint32_t v_%d_wa = v_%d;\n" (find_vars vars name) (find_vars vars x)
+                                                      |Aconst(value) -> Printf.fprintf oc "uint32_t v_%d_wa = (uint32_t)%d;\n" (find_vars vars name) (int_of_value value));
                                                       (match data with
                                                       | Avar(x) -> Printf.fprintf oc "v_%d_ram[v_%d_wa] = v_%d;}\n" (find_vars vars name) (find_vars vars name)  (find_vars vars x)
-                                                      | Aconst(value) -> Printf.fprintf oc "v_%d_ram[v_%d_wa] = %d;}\n" (find_vars vars name) (find_vars vars name) (int_of_value value)); )
+                                                      | Aconst(value) -> Printf.fprintf oc "v_%d_ram[v_%d_wa] = (uint32_t)%d;}\n" (find_vars vars name) (find_vars vars name) (int_of_value value)); )
     | _ -> ())  prog_order.p_eqs;
  (* print les res, mettre a jour les registres*)
-    List.iter (fun id -> Printf.fprintf oc "\t\tprintf(\"%s=%%ld\\n\", v_%d );\n"  id (find_vars vars id) ) prog_order.p_outputs;
+    List.iter (fun id -> Printf.fprintf oc "\t\tprintf(\"%s=%%d\\n\", v_%d );\n"  id (find_vars vars id) ) prog_order.p_outputs;
     List.iter (fun (name,elem) -> match elem with 
       |Ereg(x) -> Printf.fprintf oc "v_%d_reg = v_%d;\n" (find_vars vars x) (find_vars vars x) ;
       |_ -> ()) prog_order.p_eqs;
-  Printf.fprintf oc "} \n return 0;\n }";
+  Printf.fprintf oc "} \n return (uint32_t)(0);\n }";
   
   close_out oc
 
