@@ -1,23 +1,32 @@
 
+% arg1 = rax
+% valDeRetour = rcx
 
 
+# rrt qui sert par convention a stocker le point de code
+# de retour de la fonction
 
-# instr
-LOAD rrt 'truc2->truc
+# pour appeler la fonction foo, on fait les operations 
+# suivantes:
+
+MOV @arg1 $31
+MOV rrt 'finFoo->ici
+JMP 'foo
+ici:
+MOV rdx @valDeRetour
 
 
-truc:
-ADD rax $1
-truc2:
+JMP 'finProgramme
+
+foo:
+# code de la fonction
+ADD @valDeRetour @arg1
+finFoo:
 JMP rrt
 
 
-MOV rax rbx # rax := rbx
-
-# instr2
-
-
-
+finProgramme:
+ADD rax $0  # padding
 
 .data
 
