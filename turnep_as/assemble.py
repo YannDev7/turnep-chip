@@ -13,16 +13,16 @@ DATA = 5
 lines_for_interpreter = None
 
 reg_names = [
-    "rax",
+    "rax", #arguments des fonctions principales
     "rbx",
-    "rg1",
+    "rg1", #arguments de fonctions secondaires
     "rg2",
     "rg3",
-    "rcx",
+    "rcx", #valeurs de redour
     "rdx",
     "rex",
     "rfx",
-    "r1x",
+    "r1x", #reservees pour l'horloge
     "r2x",
     "r3x",
     "r4x",
@@ -49,7 +49,7 @@ reg_names = [
     "rec",
     "rfc",
 
-    "rrt",
+    "rrt", #saut de retour de fonction
     "rsp",
     "rbp",
 
