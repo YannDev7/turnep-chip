@@ -899,7 +899,7 @@ fin:
 59 # minutes
 59 # secondes
 
-10000 # nombre de tours par seconde
+1000 # nombre de tours par seconde
 
 
 

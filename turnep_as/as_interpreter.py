@@ -258,7 +258,7 @@ def main():
                 except Exception:
                     print("error")
                 i = input()
-        if (cycle_count +1) % 10000 == 0:
+        if (cycle_count +1) % 1000 == 0:
             input()
         cycle_count += 1
 
