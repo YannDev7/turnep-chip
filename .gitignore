@@ -5,6 +5,7 @@ powerpoint.synctex.gz
 turned_as/__pycache__/
 
 *.cmi 
+
 *.cmo 
 *.cmt 
 *.cmti  
